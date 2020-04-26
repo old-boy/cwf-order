@@ -104,41 +104,16 @@ router.post('/add', (req, res, next) => {
 // 删除用户  signRequired, adminRole,
 router.delete('/del/:id',  (req, res, next) => {
 	const id = `${req.params.id}`;
-	console.log(id)
-	User.findOne({ _id: id }, (err, user) => {
-		if (err) {
-			res.json({
-				status: '0',
-				msg: err.message,
+	User.deleteOne({ _id: id }).then((user) => {
+		console.log(user)
+		if(user){
+			res.status(200).json({
+				status: '1',
+				msg: '删除用户成功',
 				result: ''
 			})
-		}
-		if (user) {
-			Info.findOne({ _id: user.info }, (err, info) => {
-				if (err) {
-					handleError(err)
-				} else {
-					info.remove((err) => {
-						if (err) {
-							handleError(err)
-						} else {
-							user.remove((err) => {
-								if (err) {
-									handleError(err)
-								} else {
-									res.json({
-										status: '1',
-										msg: '删除用户成功',
-										result: ''
-									})
-								}
-							})
-						}
-					})
-				}
-			})
-		} else {
-			res.json({
+		}else{
+			res.status(400).json({
 				status: '0',
 				msg: '用户不存在',
 				result: ''

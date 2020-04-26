@@ -30,23 +30,30 @@
                             <el-submenu index="2">
                                 <template slot="title">
                                     <i class="el-icon-share"></i>
-                                    <span>文章管理</span>
+                                    <span>订单管理</span>
                                 </template>
                                 <el-menu-item-group>
-                                    <template slot="title">分组</template>
-                                    <el-menu-item index="2-1" route="/admin/articleNew">新增文章</el-menu-item>
-                                    <el-menu-item index="2-2" route="/admin/articleList">文章列表</el-menu-item>
-                                    <el-menu-item index="2-3" route="/admin/articleCategory">文章分类</el-menu-item>
+                                    <template slot="title">订单</template>
+                                    <el-menu-item index="2-1" route="/admin/articleNew">新增订单</el-menu-item>
+                                    <el-menu-item index="2-2" route="/admin/articleList">订单列表</el-menu-item>
+                                    <el-menu-item index="2-3" route="/admin/articleCategory">订单标签</el-menu-item>
+                                </el-menu-item-group>
+                                <el-menu-item-group>
+                                    <template slot="title">销售</template>
+                                    <el-menu-item index="2-1" route="/admin/articleNew">新增销售</el-menu-item>
+                                    <el-menu-item index="2-2" route="/admin/articleList">销售列表</el-menu-item>
                                 </el-menu-item-group>
                             </el-submenu>
                             <el-submenu index="3">
                                 <template slot="title">
                                     <i class="el-icon-star-on"></i>
-                                    <span slot="title">评论管理</span>
+                                    <span slot="title">客户管理</span>
                                 </template>
                                 <el-menu-item-group>
                                     <template slot="title">分组</template>
-                                    <el-menu-item index="3-1"  route="/admin/comment">评论列表</el-menu-item>
+                                    <el-menu-item index="3-1"  route="/admin/comment">新增客户</el-menu-item>
+                                    <el-menu-item index="3-1"  route="/admin/comment">客户列表</el-menu-item>
+                                    <el-menu-item index="3-1"  route="/admin/comment">客户类型</el-menu-item>
                                 </el-menu-item-group>
                             </el-submenu>
                         </el-menu>

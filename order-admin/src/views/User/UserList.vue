@@ -215,9 +215,11 @@ export default {
         this.loadingFlag = true
         var _data = []
         let userRole = ''
-        this.$ajax.get('/users').then(response => {
+        this.$ajax.get('/users/').then(response => {
           this.loadingFlag = false
           let res = response.data
+
+          console.log(res)
           if (res.status === '1') {
             this.users = res.result
             for (let i = 0; i < this.users.length; i++) {
@@ -239,6 +241,8 @@ export default {
                   userRole = '超级管理员'
                   break
               }
+
+              console.log(this.users[i]);
               obj.id = this.users[i]._id
               obj.account = this.users[i].account
               obj.infoId = this.users[i].info._id
@@ -261,7 +265,7 @@ export default {
       // 添加用户
       addNewUser () {
         if (this.addUserForm.pass === this.addUserForm.checkPass) {
-          this.$ajax.post('/users/newAccount', {
+          this.$ajax.post('/users/add', {
             account: this.addUserForm.account,
             // username: this.addUserForm.username,
             password: this.addUserForm.checkPass
@@ -295,7 +299,7 @@ export default {
           this.$message.error('用户删除失败')
           this.removeModalFlag = false
         } else {
-          this.$ajax.delete('/users/delUser', {
+          this.$ajax.delete(`/users/del/${this.tempId}`, {
             params: {
               id: this.tempId
             }
