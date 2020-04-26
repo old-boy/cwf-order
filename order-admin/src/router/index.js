@@ -25,7 +25,7 @@ export default new Router({
       path: '/admin',
       name: 'admin',
       component: Admin,
-      redirect: '/admin/index',
+      redirect: '/admin/userList',//登录成功后跳转的位置
       children: [
         {
           path: 'index',
