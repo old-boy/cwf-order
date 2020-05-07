@@ -14,6 +14,8 @@ var Info = require('./../app/models/info')
 // router.get('/', signRequired, (req, res, next) => {
 router.get('/', (req, res, next) => {
 	User.find({})
+		.sort({'_id':-1})
+		.limit(10)
 		.populate('info')
 		.exec()
 		.then((users) => {
