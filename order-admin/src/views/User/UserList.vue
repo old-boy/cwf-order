@@ -52,6 +52,9 @@
                   <el-option label="普通用户" value="0"></el-option>
                   <el-option label="邮件激活后的用户" value="1"></el-option>
                   <el-option label="高级用户" value="2"></el-option>
+                  <el-option label="采购" value="3"></el-option>
+                  <el-option label="国内销售" value="6"></el-option>
+                  <el-option label="国外销售" value="8"></el-option>
                   <el-option label="管理员" value="10"></el-option>
                   <el-option label="超级管理员" value="50"></el-option>
               </el-select>
@@ -232,7 +235,16 @@ export default {
                   userRole = '邮件激活后的用户'
                   break
                 case 2:
-                  userRole = '高级用户'
+                  userRole = '会计'
+                  break
+                case 3:
+                  userRole = '采购'
+                  break
+                case 6:
+                  userRole = '国内销售'
+                  break
+                 case 8:
+                  userRole = '国外销售'
                   break
                 case 10:
                   userRole = '管理'
@@ -373,6 +385,9 @@ export default {
               message: res.data.msg,
               type: 'success'
             })
+            // 重新获取新数据
+            this.loadingUser();
+            this.editModalFlag = false
           } else {
             this.$message({
               message: res.data.msg,
