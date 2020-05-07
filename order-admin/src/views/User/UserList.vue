@@ -219,7 +219,7 @@ export default {
           this.loadingFlag = false
           let res = response.data
 
-          console.log(res)
+          // console.log(res)
           if (res.status === '1') {
             this.users = res.result
             for (let i = 0; i < this.users.length; i++) {
@@ -327,10 +327,11 @@ export default {
       // 最高权限修改密码
       handleModify () {
         if (this.modifyPwdForm.pass !== '' && this.modifyPwdForm.checkPass !== '' && this.modifyPwdForm.pass === this.modifyPwdForm.checkPass) {
-          this.$ajax.post('/users/adminPwd', {
+          this.$ajax.post('/users/modify/psd', {
             id: this.tempId,
             password: this.modifyPwdForm.checkPass
           }).then(res => {
+            console.log('修改密码：'  + res.data.status)
             if (res.data.status === '1') {
               this.$message({
                 message: res.data.msg,
@@ -349,9 +350,11 @@ export default {
           })
         }
       },
-      // 修改权限
+      // 修改权限弹框
       showRoleModal (index, row) {
+        
         if (this.role < 50) {
+          console.log(this.role)
           this.$message.error('权限不够，不能设置')
         } else {
           this.editModalFlag = true
@@ -359,8 +362,9 @@ export default {
           this.roleForm.role = row.role
         }
       },
+      // 修改权限
       modifyRole () {
-        this.$ajax.post('/users/modifyRole', {
+        this.$ajax.post('/users/modify/role', {
           role: this.roleForm.role,
           id: this.tempId
         }).then(res => {

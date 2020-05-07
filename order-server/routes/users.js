@@ -44,7 +44,8 @@ router.post('/add', (req, res, next) => {
 		address = req.body.address,
 		tel = req.body.tel,
 		email = req.body.email,
-		username = req.body.username
+		username = req.body.username,
+		role = req.body.role
 
 
 		User.findOne({ account: req.body.account }).then((user) => {
@@ -78,6 +79,7 @@ router.post('/add', (req, res, next) => {
 					let newUser = {
 						account: account,
 						password: password,
+						role,
 						pwdKey: '',
 						info: info._id
 					}
@@ -107,7 +109,7 @@ router.post('/add', (req, res, next) => {
 router.delete('/del/:id',  (req, res, next) => {
 	const id = `${req.params.id}`;
 	User.deleteOne({ _id: id }).then((user) => {
-		console.log(user)
+		// console.log(user)
 		if(user){
 			res.status(200).json({
 				status: '1',
@@ -124,8 +126,8 @@ router.delete('/del/:id',  (req, res, next) => {
 	})
 })
 
-// 修改用户权限
-router.post('/modifyRole', signRequired, adminRole, (req, res, next) => {
+// 修改用户权限  signRequired, adminRole,
+router.post('/modify/role', (req, res, next) => {
 	let role = req.body.role
 	let id = req.body.id
 	User.findOne({ _id: id }, (err, user) => {
@@ -171,19 +173,13 @@ router.post('/modifyRole', signRequired, adminRole, (req, res, next) => {
 	})
 })
 
-// 最高权限修改密码
-router.post('/adminPwd', signRequired, adminRole, (req, res, next) => {
+// 最高权限修改密码 signRequired, adminRole,
+router.post('/modify/psd', (req, res, next) => {
 	let pwd = req.body.password
 	let id = req.body.id
 	User.findOne({ _id: id }, (err, user) => {
-		if (err) {
-			res.json({
-				status: '0',
-				msg: err.message,
-				result: ''
-			})
-		}
 		if (user) {
+			console.log(user)
 			crypto.randomBytes(16, (err, buf) => {
 				let salt = buf.toString('hex')
 				user.pwdKey = salt
