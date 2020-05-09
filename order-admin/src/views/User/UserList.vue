@@ -4,7 +4,7 @@
       <el-col :span="12">
           <el-breadcrumb separator-class="el-icon-arrow-right">
             <el-breadcrumb-item :to="{ path: '/admin' }">首页</el-breadcrumb-item>
-            <el-breadcrumb-item>用户列表</el-breadcrumb-item>
+            <el-breadcrumb-item>员工列表</el-breadcrumb-item>
           </el-breadcrumb>
       </el-col>
       <el-col :span="1" :offset="10">
@@ -20,7 +20,7 @@
       style="width: 100%">
       <el-table-column
         prop="account"
-        label="帐号"
+        label="登录帐号"
       >
       </el-table-column>
       <el-table-column
@@ -30,7 +30,7 @@
       </el-table-column>
       <el-table-column
         prop="role"
-        label="权限"
+        label="角色权限"
       >
       </el-table-column>
       <el-table-column
@@ -38,7 +38,7 @@
         width="400"
       >
         <template slot-scope="scope">
-          <el-button type="primary" size="mini"  @click="toInfo(scope.$index, scope.row)">用户资料</el-button>
+          <el-button type="primary" size="mini"  @click="showInfoModal(scope.$index, scope.row)">员工资料</el-button>
           <el-button type="info" size="mini"  @click="showPwdModal(scope.$index, scope.row)">重设密码</el-button>
           <el-button type="warning" size="mini"  @click="showRoleModal(scope.$index, scope.row)">权限设置</el-button>
           <el-button type="danger" size="mini" @click="showRemoveModal(scope.$index, scope.row)">删除</el-button>
@@ -108,6 +108,42 @@
           <el-button type="danger" @click="handleDelete">确 定</el-button>
       </div>
     </modal>
+    <modal :dialogFormVisible="userInfoModalFlag" @modalToggle="modalChange" :title="'查看员工信息'">
+      <el-form ref="userInfoForm" :model="userInfoForm" :label-width="formLabelWidth" slot="content">
+          <el-form-item label="上传头像">
+            <el-upload class="avatar-uploader"
+                action="/users/update/userInfo"
+                :show-file-list="false"
+                :headers="{flag: true}"
+                :on-success="handleAvatarSuccess"
+                :before-upload="beforeAvatarUpload"
+            >
+                <img v-if="userImageUrl" :src="userImageUrl" class="avatar">
+                <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+            </el-upload>
+          </el-form-item>
+          
+          <el-form-item label="用户名">
+              <el-input v-model="userInfoForm.username"></el-input>
+          </el-form-item>
+          <el-form-item label="职业">
+              <el-input v-model="userInfoForm.job"></el-input>
+          </el-form-item>
+          <el-form-item label="居住地">
+              <el-input v-model="userInfoForm.address"></el-input>
+          </el-form-item>
+          <el-form-item label="联系电话">
+              <el-input v-model="userInfoForm.tel"></el-input>
+          </el-form-item>
+          <el-form-item label="邮箱">
+              <el-input v-model="userInfoForm.email"></el-input>
+          </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+           <el-button type="danger" native-type="reset">重置</el-button>
+          <el-button type="primary" @click="updateInfo">保存</el-button>
+      </div>
+    </modal>
   </div>
 </template>
 
@@ -155,6 +191,16 @@ export default {
         }
         return {
           loadingFlag: false,
+          // 双向绑定用户基本信息
+          userInfoForm: {
+              avatar: '',
+              username: '',
+              job: '',
+              address: '',
+              tel: '',
+              email: ''
+          },
+          userImageUrl: '',
           // 双向绑定修改添加用户输入框
           addUserForm: {
             account: '',
@@ -185,6 +231,9 @@ export default {
             ]
           },
           tempId: '',
+          infoId:'',
+          // 控制用户信息模态框
+          userInfoModalFlag: false,
           // 控制删除模态框
           removeModalFlag: false,
           // 控制修改密码模态框
@@ -254,26 +303,28 @@ export default {
                   break
               }
 
-              console.log(this.users[i]);
+              // console.log(this.users[i]);
               obj.id = this.users[i]._id
               obj.account = this.users[i].account
               obj.infoId = this.users[i].info._id
               obj.username = this.users[i].info.username
               obj.role = userRole
               _data[i] = obj
+
+              // this.infoId = this.users[i].info._id
             }
             this.tableData = _data
           }
         })
       },
       // 跳转到用户信息
-      toInfo (index, row) {
-        if (this.role < 50) {
-          this.$message.error('权限不够，不能查看信息')
-        } else {
-          this.$router.push(`/admin/userInfo/${row.infoId}`)
-        }
-      },
+      // toInfo (index, row) {
+      //   if (this.role < 50) {
+      //     this.$message.error('权限不够，不能查看信息')
+      //   } else {
+      //     this.$router.push(`/admin/userInfo/${row.infoId}`)
+      //   }
+      // },
       // 添加用户
       addNewUser () {
         if (this.addUserForm.pass === this.addUserForm.checkPass) {
@@ -331,6 +382,57 @@ export default {
           })
         }
       },
+      // 用户基本信息弹框
+      showInfoModal(index, row){
+        this.userInfoModalFlag = true
+        this.tempId = row.id
+        this.showUserInfo(row)
+        
+      },
+      showUserInfo(row){
+          this.$ajax.get(`/users/get/userInfo/${row.infoId}`).then(res => {
+              if (res.data.status === '1') {
+                  let formData = res.data.result
+                  console.log('formData  ' + formData)
+                  this.userImageUrl = formData.avatar
+                  this.userInfoForm.username = formData.username
+                  this.userInfoForm.job = formData.job
+                  this.userInfoForm.address = formData.address
+                  this.userInfoForm.tel = formData.tel
+                  this.userInfoForm.email = formData.email
+              }
+          })
+      },
+      handleAvatarSuccess (res, file) {
+          this.userImageUrl = URL.createObjectURL(file.raw)
+      },
+      beforeAvatarUpload (file) {
+          // const isJPG = file.type === 'image/jpeg'
+          this.userInfoForm.avatar = file
+          const isLt2M = file.size / 1024 / 1024 < 2
+
+          /* if (!isJPG) {
+              this.$message.error('上传头像图片只能是 JPG 格式!')
+          } */
+          if (!isLt2M) {
+              this.$message.error('上传头像图片大小不能超过 2MB!')
+          }
+          return isLt2M
+      },
+      updateInfo () {
+          this.userInfoForm.infoId = this.$store.state.infoId
+          this.$ajax.post(`/users/update/userInfo/${this.userInfoForm.infoId}`, this.userInfoForm).then(res => {
+              console.log(res.data.status)
+              if (res.data.status === '1') {
+                  this.$message({
+                      message: res.data.msg,
+                      type: 'success'
+                  })
+                  this.$store.commit('SET_USERNAME', res.data.result.username)
+                  this.userInfoModalFlag = false
+              }
+          })
+      },
       // 最高权限修改密码
       showPwdModal (index, row) {
         this.pwdModalFlag = true
@@ -366,7 +468,7 @@ export default {
       showRoleModal (index, row) {
         
         if (this.role < 50) {
-          console.log(this.role)
+          // console.log(this.role)
           this.$message.error('权限不够，不能设置')
         } else {
           this.editModalFlag = true
@@ -403,6 +505,7 @@ export default {
         this.editModalFlag = false
         this.addModalFlag = false
         this.removeModalFlag = false
+        this.userInfoModalFlag = false
       },
       resetForm (formName) {
         this.$refs[formName].resetFields()
@@ -422,3 +525,30 @@ export default {
     text-align right
     box-sizing border-box
 </style>
+<style scoped>
+    .avatar-uploader {
+        margin-bottom: 20px;
+    }
+    .avatar-uploader-icon {
+        border: 1px dashed #d9d9d9;
+        border-radius: 6px;
+        cursor: pointer;
+        position: relative;
+        overflow: hidden;
+        font-size: 28px;
+        color: #8c939d;
+        width: 78px;
+        height: 78px;
+        line-height: 78px;
+        text-align: center;
+    }
+    .avatar-uploader-icon:hover {
+        border-color: #409EFF;
+    }
+    .avatar {
+        width: 78px;
+        height: 78px;
+        display: block;
+    }
+</style>
+

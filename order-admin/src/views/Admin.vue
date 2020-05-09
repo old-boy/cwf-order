@@ -23,7 +23,7 @@
                                 </template>
                                 <el-menu-item-group>
                                     <template slot="title">分组</template>
-                                    <el-menu-item index="1-1" route="/admin/userList">用户列表</el-menu-item>
+                                    <el-menu-item index="1-1" route="/admin/userList">员工列表</el-menu-item>
                                     <!-- <el-menu-item index="1-2" route="/admin/upload">权限管理</el-menu-item> -->
                                 </el-menu-item-group>
                             </el-submenu>
@@ -133,6 +133,7 @@ export default {
             } else if (command === '3') {
                 this.$ajax.get('/users/logout').then(res => {
                     if (res.data.status === '1') {
+                        console.log(res.data.status)
                         this.$store.commit('SET_USERID', '')
                         this.$store.commit('SET_USERNAME', '')
                         this.$store.commit('SET_AVATAR', '')

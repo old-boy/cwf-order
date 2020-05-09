@@ -9,7 +9,16 @@ const getters = {
                 role = '邮件激活后的用户'
                 break
             case 2:
-                role = '高级用户'
+                role = '会计'
+                break
+            case 3:
+                role = '采购'
+                break
+            case 6:
+                role = '国内销售'
+                break
+            case 8:
+                role = '国外销售'
                 break
             case 10:
                 role = '管理'

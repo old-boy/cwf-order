@@ -35,6 +35,26 @@ router.get('/', (req, res, next) => {
 		})
 })
 
+//根据ID查询
+router.get('/:id',(req,res,next) => {
+	const _id = `${req.params.id}`;
+	console.log('userId  ' + _id)
+	User.findById({_id}).then((user) => {
+		if(user){
+			res.status(200).json({
+				status: '1',
+				msg:'',
+				result: user
+			})
+		}else{
+			res.json({
+				status: '0',
+				msg: '用户不存在',
+				result: ''
+			})
+		}
+	})
+})
 // 添加用户
 router.post('/add', (req, res, next) => {
 	var account = req.body.account,
@@ -295,13 +315,10 @@ router.post('/checklogin', (req, res, next) => {
 	}
 })
 
-// 读取用户资料
-router.get('/getUserInfo', signRequired, adminRole, (req, res, next) => {
-	let infoId = req.query.infoId
-	Info.findOne({ _id: infoId }, (err, info) => {
-		if (err) {
-			handleError(err)
-		}
+// 读取用户资料  signRequired, adminRole
+router.get('/get/userInfo/:id', (req, res, next) => {
+	var _id = `${req.params.id}`;
+	Info.findById({ _id }, (err, info) => {
 		if (info) {
 			res.json({
 				status: '1',
@@ -318,60 +335,52 @@ router.get('/getUserInfo', signRequired, adminRole, (req, res, next) => {
 	})
 })
 
-// 上传用户资料
-router.post('/updateInfo', signRequired, multipartMiddleware, uploadImage, (req, res, next) => {
-	let infoId = req.body.infoId
-	let username = req.body.username
-	let job = req.body.job
-	let address = req.body.address
-	let tel = req.body.tel
-	let email = req.body.email
-	let avatarUrl = ''
-	if (req.avatarUrl) {
-		avatarUrl = req.avatarUrl
-	}
-	Info.findOne({ _id: infoId }, (err, info) => {
-		if (err) {
-			handleError(err)
+// 上传用户资料  signRequired, multipartMiddleware, uploadImage,
+router.post('/update/userInfo/:id',  (req, res, next) => {
+	var _id = `${req.params.id}`;
+	Info.findByIdAndUpdate({ _id }, req.body, (err, info) => {
+		let infoId = _id
+		let username = req.body.username
+		let job = req.body.job
+		let address = req.body.address
+		let tel = req.body.tel
+		let email = req.body.email
+		let avatar = req.body.avatar
+
+		if (avatar) {
+			avatar = req.body.avatar
 		}
-		if (info) {
-			// 用于判断是否有新上传图片
-			if (info.avatar !== '' && (avatarUrl !== '')) {
-				let oldPath = path.join(__dirname, '../', `/public/${info.avatar}`)
-				// 删除之前的图片
-				fs.unlink(oldPath, (err) => {
-					if (err) {
-						if (err.code === 'ENOENT') {
-							console.error('myfile does not exist')
-						}
-						handleError(err)
-					}
-				})
-			}
-			info.username = username
-			info.job = job
-			info.address = address
-			info.tel = tel
-			info.email = email
-			avatarUrl && (info.avatar = avatarUrl)
-			info.save(err => {
+
+		// 用于判断是否有新上传图片
+		if (avatar !== '') {
+			let oldPath = path.join(__dirname, '../', `/public/${avatar}`)
+			// 删除之前的图片
+			fs.unlink(oldPath, (err) => {
 				if (err) {
+					if (err.code === 'ENOENT') {
+						console.error('myfile does not exist')
+					}
 					handleError(err)
-				} else {
-					res.json({
-						status: '1',
-						msg: '用户资料保存成功',
-						result: info
-					})
 				}
 			})
-		} else {
-			res.json({
-				status: '0',
-				msg: '用户不存在',
-				result: ''
-			})
 		}
+
+		const newInfo = new Info({
+			infoId,
+			username,
+			job,
+			address,
+			tel,
+			email,
+			avatar
+		})
+
+		newInfo.save().then(info => 
+			res.json({ 
+				status: '1', 
+				msg: "修改成功", 
+				result: info 
+			})).catch(err => console.log(err));
 	})
 })
 
