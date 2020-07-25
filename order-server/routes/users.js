@@ -37,9 +37,11 @@ router.get('/', (req, res, next) => {
 
 //根据ID查询
 router.get('/:id',(req,res,next) => {
-	const _id = `${req.params.id}`;
+	const _id = `${req.query.id}`;
 	console.log('userId  ' + _id)
-	User.findById({_id}).then((user) => {
+	User.findById({_id})
+		.populate('info')
+		.exec((user) => {
 		console.log(user)
 		if(user){
 			res.status(200).json({
@@ -318,28 +320,31 @@ router.post('/checklogin', (req, res, next) => {
 })
 
 // 读取用户资料  signRequired, adminRole
-router.get('/get/userInfo/:id', (req, res, next) => {
+router.get('/userInfo/:id', (req, res, next) => {
 	var _id = `${req.params.id}`;
-	Info.findById({ _id }, (err, info) => {
-		if (info) {
-			res.json({
-				status: '1',
-				msg: '',
-				result: info
-			})
-		} else {
-			res.json({
-				status: '0',
-				msg: '用户不存在',
-				result: ''
-			})
-		}
-	})
+	console.log('get id    ' + _id);
+	Info.findById({_id})
+		.exec((err, info) => {
+			if (info) {
+				res.json({
+					status: '1',
+					msg: '',
+					result: info
+				})
+			} else {
+				res.json({
+					status: '0',
+					msg: '用户不存在',
+					result: ''
+				})
+			}
+		})
 })
 
 // 上传用户资料  signRequired, multipartMiddleware, uploadImage,
-router.post('/update/userInfo/:id',  (req, res, next) => {
+router.post('/userInfo/:id',  (req, res, next) => {
 	var _id = `${req.params.id}`;
+	console.log('post id  ' + _id)
 	Info.findByIdAndUpdate({ _id }, req.body, (err, info) => {
 		let infoId = _id
 		let username = req.body.username

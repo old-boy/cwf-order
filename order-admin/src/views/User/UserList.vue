@@ -232,6 +232,7 @@ export default {
           },
           tempId: '',
           infoId:'',
+          userId:'',
           // 控制用户信息模态框
           userInfoModalFlag: false,
           // 控制删除模态框
@@ -385,12 +386,15 @@ export default {
       // 用户基本信息弹框
       showInfoModal(index, row){
         this.userInfoModalFlag = true
-        this.tempId = row.id
+        this.userId = row.id
+        this.infoId = row.infoId
+        // console.log('showtempId   ' + this.tempId)
         this.showUserInfo(row)
         
       },
       showUserInfo(row){
-          this.$ajax.get(`/users/${row.infoId}`).then(res => {
+          this.$ajax.get(`/users/userInfo/${row.infoId}`).then(res => {
+            console.log('get id   ' + row.infoId)
               if (res.data.status === '1') {
                   let formData = res.data.result
                   console.log('formData  ' + formData)
@@ -421,7 +425,8 @@ export default {
       },
       updateInfo () {
           this.userInfoForm.infoId = this.$store.state.infoId
-          this.$ajax.post(`/users/update/userInfo/${this.userInfoForm.infoId}`, this.userInfoForm).then(res => {
+          console.log('post id  ' + this.infoId)
+          this.$ajax.post(`/users/userInfo/${this.infoId}`, this.userInfoForm).then(res => {
               console.log(res.data.status)
               if (res.data.status === '1') {
                   this.$message({
