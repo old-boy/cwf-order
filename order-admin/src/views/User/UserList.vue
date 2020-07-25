@@ -390,7 +390,7 @@ export default {
         
       },
       showUserInfo(row){
-          this.$ajax.get(`/users/get/userInfo/${row.infoId}`).then(res => {
+          this.$ajax.get(`/users/${row.infoId}`).then(res => {
               if (res.data.status === '1') {
                   let formData = res.data.result
                   console.log('formData  ' + formData)

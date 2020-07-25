@@ -73,6 +73,7 @@ UserSchema.pre('save', function(next) {
 })
 
 UserSchema.methods.comparePwd = function (_password, cb) {
+    console.log('_password   ' + _password)
     crypto.pbkdf2(_password, this.pwdKey, 4096, 16, 'sha1', (err, secret) => {
         if (err) return cb(err)
         if (secret.toString('hex') === this.password) {

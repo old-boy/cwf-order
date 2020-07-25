@@ -19,7 +19,7 @@ export function getInfo(token) {
 export function logout(data) {
   console.log(data)
   return request({
-    url: '/api/opinfo/logout',
+    url: '/users/logout',
     method: 'post',
     data
   })

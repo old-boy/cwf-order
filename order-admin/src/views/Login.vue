@@ -69,6 +69,7 @@
                     password: this.loginForm.password
                 }).then(response => {
                     let res = response.data
+                    // console.log('login-info  ' + res)
                     if (res.status === '1') {
                         this.$store.commit('SET_USERID', res.result.user._id)
                         this.$store.commit('SET_USERNAME', res.result.user.info.username)
@@ -95,7 +96,8 @@
         position relative
         width 100%
         height 100vh
-        background-color #2d3a4b
+        background: url(https://cdn.pixabay.com/photo/2020/07/20/12/49/milky-way-5422901_960_720.jpg) no-repeat center
+        background-size: cover
         .login-form
             position absolute
             left 0

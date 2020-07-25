@@ -40,6 +40,7 @@ router.get('/:id',(req,res,next) => {
 	const _id = `${req.params.id}`;
 	console.log('userId  ' + _id)
 	User.findById({_id}).then((user) => {
+		console.log(user)
 		if(user){
 			res.status(200).json({
 				status: '1',
@@ -236,7 +237,8 @@ router.post('/modify/psd', (req, res, next) => {
 // 登陆接口
 router.post('/login', (req, res, next) => {
 	var account = req.body.account,
-		password = req.body.password
+		password = req.body.password;
+
 	User.findOne({'account': account})
 		.populate('info', 'username avatar')
 		.exec()
@@ -244,7 +246,7 @@ router.post('/login', (req, res, next) => {
 			if (user) {
 				user.comparePwd(password, (err, isMatch) => {
 					if (err) throw err
-					if (isMatch) {
+					if (isMatch == true) {
 						req.session.user = user
 						res.json({
 							status: '1',

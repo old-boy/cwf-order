@@ -66,9 +66,9 @@ app.set('view engine', 'jade')
 app.use(logger('dev'))
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: false }))
-app.use(cookieParser('blogsecrettoken'))
+app.use(cookieParser('ordersecrettoken'))
 app.use(session({
-  secret: 'blogsecrettoken',
+  secret: 'ordersecrettoken',
   cookie: {
     maxAge: 24 * 3600 * 1000 * 7
   },

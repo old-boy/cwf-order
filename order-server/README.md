@@ -26,6 +26,7 @@ npm run start
 # 登陆
 帐号：test
 密码： 123456
+数据库名称： order
 ```
 
 
