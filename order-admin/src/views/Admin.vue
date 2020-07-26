@@ -21,13 +21,6 @@
                   <i class="el-icon-info"></i>
                   <span>用户管理</span>
                 </template>
-                <el-menu-item-group>
-                  <template slot="title">分组</template>
-                  <el-menu-item index="1-1" route="/admin/userList"
-                    >员工列表</el-menu-item
-                  >
-                  <!-- <el-menu-item index="1-2" route="/admin/upload">权限管理</el-menu-item> -->
-                </el-menu-item-group>
               </el-submenu>
               <el-submenu index="2">
                 <template slot="title">
@@ -36,22 +29,22 @@
                 </template>
                 <el-menu-item-group>
                   <template slot="title">订单</template>
-                  <el-menu-item index="2-1" route="/admin/articleNew"
+                  <el-menu-item index="2-1" route="/order/add"
                     >新增订单</el-menu-item
                   >
-                  <el-menu-item index="2-2" route="/admin/articleList"
+                  <el-menu-item index="2-2" route="/order/list"
                     >订单列表</el-menu-item
                   >
-                  <el-menu-item index="2-3" route="/admin/articleCategory"
+                  <el-menu-item index="2-3" route="/order/tag"
                     >订单标签</el-menu-item
                   >
                 </el-menu-item-group>
                 <el-menu-item-group>
                   <template slot="title">销售</template>
-                  <el-menu-item index="2-1" route="/admin/articleNew"
+                  <el-menu-item index="2-1" route="/sales/add"
                     >新增销售</el-menu-item
                   >
-                  <el-menu-item index="2-2" route="/admin/articleList"
+                  <el-menu-item index="2-2" route="/sales/list"
                     >销售列表</el-menu-item
                   >
                 </el-menu-item-group>
@@ -63,13 +56,13 @@
                 </template>
                 <el-menu-item-group>
                   <template slot="title">分组</template>
-                  <el-menu-item index="3-1" route="/admin/comment"
+                  <el-menu-item index="3-1" route="/client/add"
                     >新增客户</el-menu-item
                   >
-                  <el-menu-item index="3-1" route="/admin/comment"
+                  <el-menu-item index="3-1" route="/client/list"
                     >客户列表</el-menu-item
                   >
-                  <el-menu-item index="3-1" route="/admin/comment"
+                  <el-menu-item index="3-1" route="/client/type"
                     >客户类型</el-menu-item
                   >
                 </el-menu-item-group>
@@ -196,27 +189,27 @@ export default {
       }
     },
     watch: {
-        '$route' (to, from) {
-            switch (to.path.slice(7)) {
-                case 'userList':
-                    this.navActive = '1-1'
-                    break
-                case 'articleNew':
-                    this.navActive = '2-1'
-                    break
-                case 'articleList':
-                    this.navActive = '2-2'
-                    break
-                case 'articleCategory':
-                    this.navActive = '2-3'
-                    break
-                case '':
-                    this.navActive = ''
-                    break
-                default:
-                    this.navActive = '1-1'
-            }
-        }
+        // '$route' (to, from) {
+        //     switch (to.path.slice(7)) {
+        //         case 'userList':
+        //             this.navActive = '1-1'
+        //             break
+        //         case 'OrderAdd':
+        //             this.navActive = '2-1'
+        //             break
+        //         case 'articleList':
+        //             this.navActive = '2-2'
+        //             break
+        //         case 'articleCategory':
+        //             this.navActive = '2-3'
+        //             break
+        //         case '':
+        //             this.navActive = ''
+        //             break
+        //         default:
+        //             this.navActive = '1-1'
+        //     }
+        // }
     }
 }
 </script>

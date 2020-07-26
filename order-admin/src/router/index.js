@@ -6,10 +6,8 @@ import Index from '@/views/Index'
 import UserList from '@/views/User/UserList'
 import UserInfo from '@/views/User/UserInfo'
 import Upload from '@/views/User/Upload'
-import ArticleNew from '@/views/Article/ArticleNew'
-import ArticleList from '@/views/Article/ArticleList'
-import ArticleDetail from '@/views/Article/ArticleDetail'
-import ArticleCategory from '@/views/Article/ArticleCategory'
+import OrderAdd from '@/views/Order/OrderAdd'
+
 import Comment from '@/views/Comments/Comment'
 
 Vue.use(Router)
@@ -48,24 +46,9 @@ export default new Router({
           component: Upload
         },
         {
-          path: 'articleNew',
-          name: 'articleNew',
-          component: ArticleNew
-        },
-        {
-          path: 'articleList',
-          name: 'articleList',
-          component: ArticleList
-        },
-        {
-          path: 'articleDetail',
-          name: 'articleDetail',
-          component: ArticleDetail
-        },
-        {
-          path: 'articleCategory',
-          name: 'articleCategory',
-          component: ArticleCategory
+          path: 'order/add',
+          name: 'OrderAdd',
+          component: OrderAdd
         },
         {
           path: 'comment',
