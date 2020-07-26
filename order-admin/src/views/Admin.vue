@@ -40,12 +40,12 @@
                   >
                 </el-menu-item-group>
                 <el-menu-item-group>
-                  <template slot="title">销售</template>
+                  <template slot="title">合同</template>
                   <el-menu-item index="2-1" route="/sales/add"
-                    >新增销售</el-menu-item
+                    >新增合同</el-menu-item
                   >
                   <el-menu-item index="2-2" route="/sales/list"
-                    >销售列表</el-menu-item
+                    >合同列表</el-menu-item
                   >
                 </el-menu-item-group>
               </el-submenu>
@@ -71,55 +71,57 @@
           </el-col>
         </el-row>
       </el-aside>
-      <el-container>
-        <el-header>
-          <el-row type="flex" justify="space-between">
-            <el-col :span="6">
-              <el-radio-group v-model="isCollapse" style="margin: 10px 0;">
-                <el-radio-button :label="false">展开</el-radio-button>
-                <el-radio-button :label="true">收起</el-radio-button>
-              </el-radio-group>
-              <div class="backToIndex">
-                <router-link to="/admin">回到首页</router-link>
-              </div>
-            </el-col>
-            <el-col :sm="{ span: 5, offset: 13 }" :lg="{ span: 4, offset: 15 }">
-              <div class="profile">
-                <img
-                  :src="avatarUrl"
-                  alt="logo"
-                  width="42"
-                  height="42"
-                  v-if="avatarUrl"
-                />
-                <img
-                  src="./../assets/img/a1.jpg"
-                  alt="logo"
-                  width="42"
-                  height="42"
-                  v-else
-                />
-              </div>
-              <el-dropdown>
-                <span class="el-dropdown-link">
-                  {{ formatRole
-                  }}<i class="el-icon-arrow-down el-icon--right"></i>
-                </span>
-                <el-dropdown-menu slot="dropdown">
-                  <el-dropdown-item command="1">基本资料</el-dropdown-item>
-                  <el-dropdown-item command="2">修改密码</el-dropdown-item>
-                  <el-dropdown-item command="3" @click="loginOut">退出</el-dropdown-item
-                  >
-                </el-dropdown-menu>
-                <h4 class="login-name">{{ username }}</h4>
-              </el-dropdown>
-            </el-col>
-          </el-row>
-        </el-header>
-        <el-main>
-          <router-view />
-        </el-main>
-      </el-container>
+      <transition name="fade" mode="out-in" appear>
+        <el-container>
+          <el-header>
+            <el-row type="flex" justify="space-between">
+              <el-col :span="6">
+                <el-radio-group v-model="isCollapse" style="margin: 10px 0;">
+                  <el-radio-button :label="false">展开</el-radio-button>
+                  <el-radio-button :label="true">收起</el-radio-button>
+                </el-radio-group>
+                <div class="backToIndex">
+                  <router-link to="/admin">回到首页</router-link>
+                </div>
+              </el-col>
+              <el-col :sm="{ span: 5, offset: 13 }" :lg="{ span: 4, offset: 15 }">
+                <div class="profile">
+                  <img
+                    :src="avatarUrl"
+                    alt="logo"
+                    width="42"
+                    height="42"
+                    v-if="avatarUrl"
+                  />
+                  <img
+                    src="./../assets/img/a1.jpg"
+                    alt="logo"
+                    width="42"
+                    height="42"
+                    v-else
+                  />
+                </div>
+                <el-dropdown>
+                  <span class="el-dropdown-link">
+                    {{ formatRole
+                    }}<i class="el-icon-arrow-down el-icon--right"></i>
+                  </span>
+                  <el-dropdown-menu slot="dropdown">
+                    <el-dropdown-item command="1">基本资料</el-dropdown-item>
+                    <el-dropdown-item command="2">修改密码</el-dropdown-item>
+                    <el-dropdown-item command="3" @click="loginOut">退出</el-dropdown-item
+                    >
+                  </el-dropdown-menu>
+                  <h4 class="login-name">{{ username }}</h4>
+                </el-dropdown>
+              </el-col>
+            </el-row>
+          </el-header>
+          <el-main>
+            <router-view />
+          </el-main>
+        </el-container>
+      </transition>
     </el-container>
   </div>
 </template>
@@ -189,27 +191,25 @@ export default {
       }
     },
     watch: {
-        // '$route' (to, from) {
-        //     switch (to.path.slice(7)) {
-        //         case 'userList':
-        //             this.navActive = '1-1'
-        //             break
-        //         case 'OrderAdd':
-        //             this.navActive = '2-1'
-        //             break
-        //         case 'articleList':
-        //             this.navActive = '2-2'
-        //             break
-        //         case 'articleCategory':
-        //             this.navActive = '2-3'
-        //             break
-        //         case '':
-        //             this.navActive = ''
-        //             break
-        //         default:
-        //             this.navActive = '1-1'
-        //     }
-        // }
+        '$route' (to, from) {
+            switch (to.path.slice(7)) {
+                case 'userList':
+                    this.navActive = '1-1'
+                    break
+                case '/order/add':
+                    this.navActive = '2-1'
+                    break
+                case '/order/list':
+                    this.navActive = '2-2'
+                    break
+                
+                case '':
+                    this.navActive = ''
+                    break
+                default:
+                    this.navActive = '1-1'
+            }
+        }
     }
 }
 </script>
