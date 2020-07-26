@@ -35,6 +35,55 @@ router.get('/', (req, res, next) => {
 		})
 })
 
+//分页查询
+router.get('/page/:page',(req,res,next) => {
+	const _index = `${req.query.index}`;
+	
+	var query=User.find();
+
+    query.skip(_index * 10);
+    query.limit(10);
+	query.sort({'_id':-1});
+	query.populate('info');
+	query.exec().then((users,total,index) => {
+		if (users) {
+			res.json({
+				status: '1',
+				msg: '',
+				result: users,
+				curPage: index
+			})
+		} else {
+			res.json({
+				status: '0',
+				msg: '没有用户',
+				result: ''
+			})
+		}
+	})
+})
+//查询table 总数
+router.get('/total',(req,res,next) => {
+	User.find()
+		.count()
+		.then((total) => {
+			console.log('total  ' + total)
+			if(total > 0){
+				res.json({
+					status: '1',
+					msg: '',
+					total: total
+				})
+			} else {
+				res.json({
+					status: '0',
+					msg: '没有用户',
+					total: 0
+				})
+			}
+		})
+
+})
 //根据ID查询
 router.get('/:id',(req,res,next) => {
 	const _id = `${req.query.id}`;

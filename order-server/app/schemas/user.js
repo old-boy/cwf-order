@@ -28,21 +28,19 @@ const UserSchema = new mongoose.Schema({
         >10: admin 管理员
         >50: super admin 超级管理员(开发时候用)
     */
-    meta: {
-        createAt: {
-            type: Date,
-            default: Date.now()
-        },
-        updateAt: {
-            type: Date,
-            default: Date.now()
-        }
+    createAt: {
+        type: Date,
+        default: Date.now()
+    },
+    updateAt: {
+        type: Date,
+        default: Date.now()
     }
 })
 
 UserSchema.pre('save', function(next) {
     if (this.isNew) {
-        this.meta.createAt = this.meta.updateAt = Date.now()
+        this.createAt = this.updateAt = Date.now()
 
         /**  crypto.randomBytes() 生成随机加密数据
          *   crypto.randomBytes(size, [callback])  生成加密用的伪随机码，支持2种方法，当传递cb的话就是异步方法，不传cb就是同步方法
@@ -67,7 +65,7 @@ UserSchema.pre('save', function(next) {
             })
         })
     } else {
-        this.meta.updateAt = Date.now()
+        this.updateAt = Date.now()
         next()
     }
 })

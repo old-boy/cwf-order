@@ -16,15 +16,13 @@ const InfoSchema = new Schema({
     address: String,
     tel: String,
     email: String,
-    meta: {
-        craetedAt: {
-            type: Date,
-            default: Date.now()
-        },
-        updatedAt: {
-            type: Date,
-            default: Date.now()
-        }
+    craetedAt: {
+        type: Date,
+        default: Date.now()
+    },
+    updatedAt: {
+        type: Date,
+        default: Date.now()
     }
 })
 
@@ -36,9 +34,9 @@ const InfoSchema = new Schema({
  */
 InfoSchema.pre('save', function () {
     if (this.isNew) {
-        this.meta.craetedAt = this.meta.updatedAt = Date.now()
+        this.craetedAt = this.updatedAt = Date.now()
     } else {
-        this.meta.updatedAt = Date.now()
+        this.updatedAt = Date.now()
     }
 })
 

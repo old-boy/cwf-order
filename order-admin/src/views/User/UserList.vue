@@ -17,7 +17,12 @@
       element-loading-spinner="el-icon-loading"
       :data="tableData"
       stripe
-      style="width: 100%">
+      style="width: 100%"
+      @selection-change="handleSelectionChange">>
+      <el-table-column
+      type="selection"
+      width="55">
+    </el-table-column>
       <el-table-column
         prop="account"
         label="登录帐号"
@@ -26,6 +31,10 @@
       <el-table-column
         prop="username"
         label="用户名"
+      ></el-table-column>
+      <el-table-column
+        prop="account"
+        label="名字"
       >
       </el-table-column>
       <el-table-column
@@ -45,6 +54,13 @@
         </template>
       </el-table-column>
     </el-table>
+    <pagination 
+      :total="total"
+      :pageCount="pageCount"
+      :currentPage="currentPage"
+      @clickpageNum="clickpageNum">
+    </pagination>
+
     <modal :dialogFormVisible="editModalFlag" @modalToggle="modalChange" :title="'权限信息'">
       <el-form :model="roleForm" slot="content">
           <el-form-item label="权限设置" :label-width="formLabelWidth">
@@ -149,6 +165,7 @@
 
 <script type="text/ecmascript-6">
 import modal from '@/components/Modal'
+import pagination from '@/components/Pagination'
 import { mapState } from 'vuex'
 
 export default {
@@ -190,6 +207,9 @@ export default {
           }
         }
         return {
+         total:0,
+          pageCount:1,
+          currentPage:1,
           loadingFlag: false,
           // 双向绑定用户基本信息
           userInfoForm: {
@@ -201,6 +221,7 @@ export default {
               email: ''
           },
           userImageUrl: '',
+          multipleSelection: [],
           // 双向绑定修改添加用户输入框
           addUserForm: {
             account: '',
@@ -262,18 +283,47 @@ export default {
     },
     mounted () {
       this.loadingUser()
+      this.tableTotal()
+    },
+    watch: {
+      
+      immediate: true
     },
     methods: {
       loadingUser () {
         this.loadingFlag = true
-        var _data = []
-        let userRole = ''
+        
         this.$ajax.get('/users/').then(response => {
           this.loadingFlag = false
           let res = response.data
 
           // console.log(res)
-          if (res.status === '1') {
+           this.getUserData(res);
+        })
+      },
+      //table 总数
+      tableTotal(){
+        this.$ajax.get('/users/total').then(response => {
+          // console.log('total  ' + response.data.total)
+          this.total = response.data.total;
+        })
+      },
+      //分页点击下一页
+      clickpageNum(index){
+        this.loadingFlag = true
+        console.log(`当前页: ${index}`);
+        this.currentPage = index;
+        this.$ajax.get(`/users/page/${this.currentPage}`).then(response => {
+          this.loadingFlag = false
+          let res = response.data.result
+          this.tableData = res
+        })
+      },
+      
+      getUserData(res){
+        var _data = []
+        let userRole = ''
+        if (res.status === '1') {
             this.users = res.result
             for (let i = 0; i < this.users.length; i++) {
               var obj = {}
@@ -316,16 +366,7 @@ export default {
             }
             this.tableData = _data
           }
-        })
       },
-      // 跳转到用户信息
-      // toInfo (index, row) {
-      //   if (this.role < 50) {
-      //     this.$message.error('权限不够，不能查看信息')
-      //   } else {
-      //     this.$router.push(`/admin/userInfo/${row.infoId}`)
-      //   }
-      // },
       // 添加用户
       addNewUser () {
         if (this.addUserForm.pass === this.addUserForm.checkPass) {
@@ -357,6 +398,9 @@ export default {
       showRemoveModal (index, row) {
         this.removeModalFlag = true
         this.tempId = row.id
+      },
+      handleSelectionChange(val){
+        this.multipleSelection = val
       },
       handleDelete () {
         if (this.tempId === this.$store.state.userId) {
@@ -517,7 +561,8 @@ export default {
       }
     },
     components: {
-      modal
+      modal,
+      pagination
     }
 }
 </script>
