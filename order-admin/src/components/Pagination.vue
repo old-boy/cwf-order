@@ -16,10 +16,10 @@
 <script>
 export default {
     name: 'pagination',
-    props:['total','pageCount','currentPage'],
+    props:['total','pageCount','currentPage','pageSize'],
     data() {
         return {
-            pageSize: 10
+            
         }
     },
     methods: {

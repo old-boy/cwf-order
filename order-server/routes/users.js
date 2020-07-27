@@ -36,13 +36,15 @@ router.get('/', (req, res, next) => {
 })
 
 //分页查询
-router.get('/page/:page',(req,res,next) => {
-	const _index = `${req.query.index}`;
-	
+router.get('/page/:page/size/:size',(req,res,next) => {
+	const _page = `${req.params.page}`;
+	const _size = `${req.params.size}`
+
+	console.log("传的size为：   " + _size + "    page:   " + _page)
 	var query=User.find();
 
-    query.skip(_index * 10);
-    query.limit(10);
+    query.skip(_page * _size);
+    query.limit(_size);
 	query.sort({'_id':-1});
 	query.populate('info');
 	query.exec().then((users,total,index) => {

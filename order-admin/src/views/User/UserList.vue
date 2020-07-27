@@ -58,6 +58,7 @@
       :total="total"
       :pageCount="pageCount"
       :currentPage="currentPage"
+      :pageSize="pageSize"
       @clickpageNum="clickpageNum">
     </pagination>
 
@@ -210,6 +211,7 @@ export default {
          total:0,
           pageCount:1,
           currentPage:1,
+          pageSize: 10,
           loadingFlag: false,
           // 双向绑定用户基本信息
           userInfoForm: {
@@ -311,9 +313,13 @@ export default {
       //分页点击下一页
       clickpageNum(index){
         this.loadingFlag = true
-        console.log(`当前页: ${index}`);
         this.currentPage = index;
-        this.$ajax.get(`/users/page/${this.currentPage}`).then(response => {
+        this.$ajax.get(`/users/page/${this.currentPage}/size/${this.pageSize}`,{
+          params: {
+              page: this.currentPage,
+              size: this.pageSize
+            }
+        }).then(response => {
           this.loadingFlag = false
           let res = response.data.result
           this.tableData = res

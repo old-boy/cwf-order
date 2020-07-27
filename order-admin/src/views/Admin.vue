@@ -21,30 +21,30 @@
                   <i class="el-icon-info"></i>
                   <span>用户管理</span>
                 </template>
+                <el-menu-item-group>
+                  <el-menu-item index="1-1" route="/admin/userList"
+                    >员工管理</el-menu-item
+                  >
+                </el-menu-item-group>
               </el-submenu>
               <el-submenu index="2">
                 <template slot="title">
                   <i class="el-icon-share"></i>
                   <span>订单管理</span>
                 </template>
+                
                 <el-menu-item-group>
                   <template slot="title">订单</template>
-                  <el-menu-item index="2-1" route="/order/add"
-                    >新增订单</el-menu-item
-                  >
-                  <el-menu-item index="2-2" route="/order/list"
+                  <el-menu-item index="2-1" route="/order/list"
                     >订单列表</el-menu-item
                   >
-                  <el-menu-item index="2-3" route="/order/tag"
+                  <el-menu-item index="2-2" route="/order/tag"
                     >订单标签</el-menu-item
                   >
                 </el-menu-item-group>
                 <el-menu-item-group>
                   <template slot="title">合同</template>
-                  <el-menu-item index="2-1" route="/sales/add"
-                    >新增合同</el-menu-item
-                  >
-                  <el-menu-item index="2-2" route="/sales/list"
+                  <el-menu-item index="2-3" route="/sales/list"
                     >合同列表</el-menu-item
                   >
                 </el-menu-item-group>
@@ -56,13 +56,10 @@
                 </template>
                 <el-menu-item-group>
                   <template slot="title">分组</template>
-                  <el-menu-item index="3-1" route="/client/add"
-                    >新增客户</el-menu-item
-                  >
                   <el-menu-item index="3-1" route="/client/list"
                     >客户列表</el-menu-item
                   >
-                  <el-menu-item index="3-1" route="/client/type"
+                  <el-menu-item index="3-2" route="/client/type"
                     >客户类型</el-menu-item
                   >
                 </el-menu-item-group>
