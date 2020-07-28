@@ -9,11 +9,9 @@ var bodyParser = require('body-parser')
 
 var index = require('./routes/index')
 var users = require('./routes/users')
-var articles = require('./routes/articles')
-var categories = require('./routes/categories')
-var feUser = require('./routes/feUser')
-var feCategories = require('./routes/feCategories')
-var feArticles = require('./routes/feArticles')
+var clients = require('./routes/clients')
+var tags = require('./routes/tags')
+
 
 var app = express()
 
@@ -96,11 +94,9 @@ app.use(express.static(path.join(__dirname, 'public')))
 
 app.use('/', index)
 app.use('/users', users)
-app.use('/articles', articles)
-app.use('/categories', categories)
-app.use('/feUser', feUser)
-app.use('/feCategories', feCategories)
-app.use('/feArticles', feArticles)
+app.use('/client', clients)
+app.use('/tag',tags)
+
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

@@ -94,7 +94,7 @@ import { mapState } from 'vuex'
             },
             loadingUserInfo () {
                 this.userInfoForm.infoId = this.$store.state.infoId
-                this.$ajax.get(`/users/get/userInfo/${this.userInfoForm.infoId}`).then(res => {
+                this.$ajax.get(`/users/userInfo/${this.userInfoForm.infoId}`).then(res => {
                     if (res.data.status === '1') {
                         let formData = res.data.result
                         console.log('formData  ' + formData)
