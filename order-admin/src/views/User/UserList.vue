@@ -288,7 +288,6 @@ export default {
       this.tableTotal()
     },
     watch: {
-      
       immediate: true
     },
     methods: {

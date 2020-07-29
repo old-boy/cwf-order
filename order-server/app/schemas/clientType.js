@@ -4,23 +4,10 @@ const Schema = mongoose.Schema
 // 获取ObjectId,populate需用到，用于表与表的关联
 const ObjectId = Schema.Types.ObjectId
 
-const clientSchema = new Schema({
-    clientName: {
+const clientTypeSchema = new Schema({
+    clientType: {
         unique: true,
         type: String
-    },
-    type: {
-        type: ObjectId,
-        ref: 'ClientType'
-    },
-    address:String,
-    tel:String,
-    fax:String,
-    contactPerson:String,
-    contactTel:String,
-    payment:{
-        accountPayment: String,
-        isPayment: Boolean
     },
     createdAt: {
         type: Date,
@@ -32,7 +19,7 @@ const clientSchema = new Schema({
     }
 }) 
 
-clientSchema.pre('save', function() {
+clientTypeSchema.pre('save', function() {
     if (this.isNew) {
         this.createdAt = this.updatedAt = Date.now()
     } else {
@@ -41,4 +28,4 @@ clientSchema.pre('save', function() {
     next()
 })
 
-module.exports = clientSchema
+module.exports = clientTypeSchema

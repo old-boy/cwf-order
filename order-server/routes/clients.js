@@ -1,10 +1,95 @@
 var express = require('express')
 var router = express.Router()
+
 var Client = require('../app/models/client')
+var ClientType = require('../app/models/clientType')
+
 var { handleError } = require('../public/util/handleError')
 var { signRequired, adminRole } = require('../middleware/auth.js')
 
 router.use(signRequired)
+
+//查询客户类型
+router.get('/type',(req,res,next) => {
+    ClientType.find({})
+		.sort({'_id':-1})
+		.limit(10)
+		.exec()
+		.then((types) => {
+			if (types) {
+				res.json({
+					status: '1',
+					msg: '',
+					result: types
+				})
+			} else {
+				res.json({
+					status: '0',
+					msg: '类型不存在',
+					result: ''
+				})
+			}
+		})
+})
+
+//新增类型
+router.post('/type/add',(req,res,next) => {
+    const clientType = req.body.clientType;
+
+    ClientType.findOne({clientType:req.body.clientType}).then((type)　=> {
+        if(type){
+            return res.status(400).json(
+				{
+					status: '0',
+					msg: '客户类型已存在',
+					result: ''
+				}
+			);
+        }else{
+            let newClientType = {
+                clientType
+            };
+
+            let clientTypeEntity = new Tag(newClientType)
+            clientTypeEntity.save(err => {
+                if (err) {
+                    res.json({
+                        status: '0',
+                        msg: err.message,
+                        result: ''
+                    })
+                } else {
+                    res.json({
+                        status: '1',
+                        msg: '客户类型创建成功',
+                        result: ''
+                    })
+                }
+            })
+        }
+    })
+})
+
+//删除客户类型
+router.delete('/type/del/:id',(req,res,next) => {
+    const id = `${req.params.id}`;
+	Client.deleteOne({ _id: id }).then((type) => {
+		// console.log(user)
+		if(type){
+			res.status(200).json({
+				status: '1',
+				msg: '删除成功',
+				result: ''
+			})
+		}else{
+			res.status(400).json({
+				status: '0',
+				msg: '不存在',
+				result: ''
+			})
+		}
+	})
+})
 
 //查询客户
 router.get('/', (req, res, next) => {
