@@ -4,7 +4,7 @@ const ObjectId = Schema.Types.ObjectId
 
 const tagSchema = new Schema({
     tagName: String,
-    tagType: Boolean,
+    tagType: Number,//1 合同 2 客户 3 员工
     category: {
         type: ObjectId,
         ref: 'Category'
