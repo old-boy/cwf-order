@@ -38,6 +38,13 @@
                 </template>
             </el-table-column>
             </el-table>
+            <pagination 
+            :total="total"
+            :pageCount="pageCount"
+            :currentPage="currentPage"
+            :pageSize="pageSize"
+            @clickpageNum="clickpageNum">
+            </pagination>
             <modal :dialogFormVisible="addModalFlag" @modalToggle="modalChange" :title="'编辑'">
                 <el-form ref="clientTypeForm" :model="clientTypeForm" :label-width="formLabelWidth" slot="content">
                     <el-form-item label="客户类型"  prop="clientType">
@@ -56,6 +63,10 @@ import modal from '@/components/Modal'
 import pagination from '@/components/Pagination'
 
 export default {
+    components: {
+        modal,
+        pagination
+    },
     data(){
         var validateClientType = (rule, value, callback) => {
           if (value === '') {
@@ -65,9 +76,16 @@ export default {
           }
         }
         return {
+            total:0,
+            pageCount:1,
+            currentPage:1,
+            pageSize: 10,
             loadingFlag: false,
             tableData: [],
+            temId:'',
+            clients:[],
             addModalFlag: false,
+            removeModalFlag:false,
             clientTypeForm:{
                 clientType:""
             },
@@ -80,14 +98,26 @@ export default {
             }
         }
     },
-    components: {
-      modal,
-      pagination
-    },
     created() {
-        
+        this.loadData()
     },
     methods: {
+        //分页点击下一页
+        clickpageNum(index){
+            console.log('pageCount  ' + index)
+            // this.loadingFlag = true
+            // this.currentPage = index;
+            // this.$ajax.get(`/users/page/${this.currentPage}/size/${this.pageSize}`,{
+            //     params: {
+            //         page: this.currentPage,
+            //         size: this.pageSize
+            //     }
+            // }).then(response => {
+            //     this.loadingFlag = false
+            //     let res = response.data.result
+            //     this.tableData = res
+            // })
+        },
         handleSelectionChange(){
 
         },
@@ -99,6 +129,7 @@ export default {
         },
         modalChange(){
             this.addModalFlag = false;
+            this.removeModalFlag = false;
         },
         saveInfo(){
 
@@ -108,7 +139,7 @@ export default {
         },
         addClientType(){
             if(this.clientTypeForm.clientType != ''){
-                this.$ajax.post('/client/type/add',{
+                this.$ajax.post('/clients/type/add',{
                     clientType: this.clientTypeForm.clientType
                 }).then(res => {
                     if (res.data.status === '1') {
@@ -116,7 +147,7 @@ export default {
                         message: res.data.msg,
                         type: 'success'
                     })
-                    // this.loadingUser()
+                    this.loadData()
                     this.addModalFlag = false
                     this.resetForm('clientTypeForm')
                     } else {
@@ -125,10 +156,30 @@ export default {
                 })
             }
         },
+        loadData(){
+            this.loadingFlag = true;
+            
+            this.$ajax.get('/clients/type').then(response => {
+                this.loadingFlag = false
+                let res = response.data.result;
+                console.log('clients  ' + res)
+                this.tableData = res;
+            })
+
+            this.totalData();
+        },
+        totalData(){
+            this.$ajax.get('/clients/total').then(response => {
+            this.total = response.data.total;
+            })
+        },
+        showRemoveModal(index,row){
+            this.removeModalFlag = true;
+            this.temId = row.id;
+        },
         resetForm (formName) {
             this.$refs[formName].resetFields()
         }
     },
-
 }
 </script>

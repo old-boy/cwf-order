@@ -12,7 +12,7 @@ router.use(signRequired)
 //查询客户类型
 router.get('/type',(req,res,next) => {
     ClientType.find({})
-		.sort({'_id':-1})
+		.sort({'_id':1})
 		.limit(10)
 		.exec()
 		.then((types) => {
@@ -30,6 +30,29 @@ router.get('/type',(req,res,next) => {
 				})
 			}
 		})
+})
+
+//查询类型总数
+router.get('/total',(req,res,next) => {
+	ClientType.find()
+		.count()
+		.then((total) => {
+			console.log('total  ' + total)
+			if(total > 0){
+				res.json({
+					status: '1',
+					msg: '',
+					total: total
+				})
+			} else {
+				res.json({
+					status: '0',
+					msg: '没有用户',
+					total: 0
+				})
+			}
+		})
+
 })
 
 //新增类型
@@ -50,7 +73,7 @@ router.post('/type/add',(req,res,next) => {
                 clientType
             };
 
-            let clientTypeEntity = new Tag(newClientType)
+            let clientTypeEntity = new ClientType(newClientType)
             clientTypeEntity.save(err => {
                 if (err) {
                     res.json({

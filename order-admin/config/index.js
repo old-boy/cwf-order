@@ -13,16 +13,7 @@ module.exports = {
       '/users': {
         target: 'http://localhost:3000'
       },
-      '/articles': {
-        target: 'http://localhost:3000'
-      },
-      '/categories': {
-        target: 'http://localhost:3000'
-      },
-      '/upload': {
-        target: 'http://localhost:3000'
-      },
-      '/feArticles': {
+      '/clients': {
         target: 'http://localhost:3000'
       }
     },

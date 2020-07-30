@@ -94,7 +94,7 @@ app.use(express.static(path.join(__dirname, 'public')))
 
 app.use('/', index)
 app.use('/users', users)
-app.use('/client', clients)
+app.use('/clients', clients)
 app.use('/tag',tags)
 
 

@@ -8,6 +8,7 @@ import { getCookie } from './util/cookies'
 import 'mavon-editor/dist/css/index.css'
 import ElementUI from 'element-ui'
 import 'element-ui/lib/theme-chalk/index.css'
+// import './styles/index.scss'
 
 Vue.use(ElementUI)
 // Vue.use(mavonEditor)

@@ -208,7 +208,7 @@ export default {
           }
         }
         return {
-         total:0,
+          total:0,
           pageCount:1,
           currentPage:1,
           pageSize: 10,
@@ -292,7 +292,7 @@ export default {
     },
     methods: {
       loadingUser () {
-        this.loadingFlag = true
+        this.loadingFlag = true;
         
         this.$ajax.get('/users/').then(response => {
           this.loadingFlag = false
