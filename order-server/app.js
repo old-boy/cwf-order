@@ -23,6 +23,7 @@ mongoose.Promise = global.Promise
 const dburl = "mongodb://localhost:27017/blog";
 mongoose.connect(dburl, { useNewUrlParser: true }).then(() => console.log('Database Successful！')).catch((err) => console.log(err));
 
+
 var port = normalizePort(process.env.PORT || '3000');
 // 
 

@@ -9,7 +9,8 @@ const state = {
     username: '',
     role: '',
     infoId: '',
-    avatarUrl: ''
+    avatarUrl: '',
+    typeId:''
 }
 
 export default new Vuex.Store({

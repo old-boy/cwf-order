@@ -17,3 +17,7 @@ export const SET_INFOID = (state, val) => {
 export const SET_AVATAR = (state, val) => {
     state.avatarUrl = val
 }
+
+export const SET_TYPEID = (state, val) => {
+    state.typeId = val
+}

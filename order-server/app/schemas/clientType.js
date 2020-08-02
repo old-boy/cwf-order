@@ -9,6 +9,7 @@ const clientTypeSchema = new Schema({
         unique: true,
         type: String
     },
+    clientTypeDes:String,
     createdAt: {
         type: Date,
         defalut: Date.now()

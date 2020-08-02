@@ -14,6 +14,7 @@ router.get('/type',(req,res,next) => {
     ClientType.find({})
 		.sort({'_id':1})
 		.limit(10)
+		.populate('type')
 		.exec()
 		.then((types) => {
 			if (types) {
@@ -30,6 +31,49 @@ router.get('/type',(req,res,next) => {
 				})
 			}
 		})
+})
+
+//根据ID查询
+router.get('/type/:id',(req,res,next) => {
+	const _id = `${req.query.id}`;
+	console.log('typeId  ' + _id)
+	ClientType.findById({_id})
+		.exec((type) => {
+		console.log(type)
+		if(type){
+			res.status(200).json({
+				status: '1',
+				msg:'',
+				result: type
+			})
+		}else{
+			res.json({
+				status: '0',
+				msg: '类型不存在',
+				result: ''
+			})
+		}
+	})
+})
+
+//根据 id 更新数据
+router.post('/type/update/:id',(req,res,next) => {
+	var _id = `${req.query.id}`;
+	var typeId = _id
+	ClientType.findOneAndUpdate({ _id }, req.body,(err,type) => {
+		let clientType = req.body.clientType;
+		const newType = new ClientType({
+			typeId,
+			clientType
+		});
+
+		newType.save().then(data => 
+			res.json({ 
+				status: '1', 
+				msg: "修改成功", 
+				result: data 
+			})).catch(err => console.log(err));
+	})
 })
 
 //查询类型总数
@@ -95,9 +139,10 @@ router.post('/type/add',(req,res,next) => {
 
 //删除客户类型
 router.delete('/type/del/:id',(req,res,next) => {
-    const id = `${req.params.id}`;
-	Client.deleteOne({ _id: id }).then((type) => {
+	const id = `${req.params.id}`;
+	ClientType.deleteOne({ _id: id }).then((type) => {
 		// console.log(user)
+		console.log(type)
 		if(type){
 			res.status(200).json({
 				status: '1',
