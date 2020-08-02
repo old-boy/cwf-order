@@ -9,7 +9,9 @@ import Upload from '@/views/User/Upload'
 import OrderList from '@/views/Order/OrderList'
 import OrderTag from '@/views/Order/OrderTag'
 import SalesList from '@/views/Sales/SalesList'
+import ClientList from '@/views/Client/ClientList'
 import ClientType from '@/views/Client/ClientType'
+import Payment from '@/views/Client/Payment'
 import Comment from '@/views/Comments/Comment'
 
 Vue.use(Router)
@@ -63,9 +65,19 @@ export default new Router({
           component: SalesList
         },
         {
+          path: '/client/list',
+          name: 'ClientList',
+          component: ClientList
+        },
+        {
           path: '/client/type',
           name: 'ClientType',
           component: ClientType
+        },
+        {
+          path: '/client/pay',
+          name: 'Payment',
+          component: Payment
         },
         {
           path: 'comment',

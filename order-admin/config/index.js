@@ -15,6 +15,9 @@ module.exports = {
       },
       '/clients': {
         target: 'http://localhost:3000'
+      },
+      '/pay':{
+        target: 'http://localhost:3000'
       }
     },
 

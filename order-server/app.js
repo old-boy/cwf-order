@@ -11,6 +11,7 @@ var index = require('./routes/index')
 var users = require('./routes/users')
 var clients = require('./routes/clients')
 var tags = require('./routes/tags')
+var pays = require('./routes/pay')
 
 
 var app = express()
@@ -97,6 +98,7 @@ app.use('/', index)
 app.use('/users', users)
 app.use('/clients', clients)
 app.use('/tag',tags)
+app.use('/pay',pays)
 
 
 // catch 404 and forward to error handler

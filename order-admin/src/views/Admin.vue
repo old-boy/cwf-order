@@ -62,6 +62,9 @@
                   <el-menu-item index="3-2" route="/client/type"
                     >客户类型</el-menu-item
                   >
+                  <el-menu-item index="3-3" route="/client/pay"
+                    >汇款方式</el-menu-item
+                  >
                 </el-menu-item-group>
               </el-submenu>
             </el-menu>

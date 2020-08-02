@@ -154,11 +154,10 @@ export default {
             this.addModalFlag = false;
             this.removeModalFlag = false;
             this.editModalFlag = false;
-            this.removeModalFlag = false;
         },
-        addModalType(){
-            this.addModalFlag = true;
-        },
+        // addModalType(){
+        //     this.addModalFlag = true;
+        // },
         addClientType(){
             if(this.clientTypeForm.clientType != ''){
                 this.$ajax.post('/clients/type/add',{

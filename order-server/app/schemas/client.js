@@ -18,9 +18,9 @@ const clientSchema = new Schema({
     fax:String,
     contactPerson:String,
     contactTel:String,
-    payment:{
-        accountPayment: String,
-        isPayment: Boolean
+    pay:{
+        type: ObjectId,
+        ref:"Pay"
     },
     createdAt: {
         type: Date,
