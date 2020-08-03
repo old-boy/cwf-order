@@ -176,12 +176,8 @@ export default {
                     // 重新获取新数据
                     this.loadingData();
                     this.mofiyModalFlag = false
-                } else {
-                    this.$message({
-                        message: res.data.msg,
-                        type: 'error'
-                    })
                 }
+                
                 this.mofiyModalFlag = false;
                 this.loadingData();
                 this.mofiyPayForm.paymentAccount = '';
