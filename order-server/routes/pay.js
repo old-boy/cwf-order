@@ -111,7 +111,7 @@ router.delete('/del/:id',  (req, res, next) => {
 //查询table 总数
 router.get('/total',(req,res,next) => {
 	Pay.find()
-		.count()
+		.countDocuments()
 		.then((total) => {
 			console.log('total  ' + total)
 			if(total > 0){
@@ -134,7 +134,7 @@ router.get('/total',(req,res,next) => {
 //修改
 router.post('/modify/:id',(req,res,next) => {
 	const _id = `${req.params.id}`;
-	Pay.findByIdAndUpdate({ _id }, req.body, (err, pay) => {
+	Pay.updateOne({ _id }, req.body, (err, pay) => {
 		if (err) {
 			res.status(500).json({ error: err });
 		} else {

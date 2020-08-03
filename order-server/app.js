@@ -22,7 +22,8 @@ mongoose.Promise = global.Promise
 // mongoose.connect('mongodb://127.0.0.1:27017/blog')
 // db
 const dburl = "mongodb://localhost:27017/blog";
-mongoose.connect(dburl, { useNewUrlParser: true, useFindAndModify: false }).then(() => console.log('Database Successful！')).catch((err) => console.log(err));
+
+mongoose.connect(dburl, { useNewUrlParser: true, useFindAndModify: false, useCreateIndex: true, useUnifiedTopology: true }).then(() => console.log('Database Successful！')).catch((err) => console.log(err));
 
 
 var port = normalizePort(process.env.PORT || '3000');
