@@ -7,7 +7,7 @@ const crypto = require('crypto')
 const PaySchema = new mongoose.Schema({
     paymentAccount:{
         unique: true,
-        type: Number
+        type: String
     },
     paymentName:String,
     createdAt: {

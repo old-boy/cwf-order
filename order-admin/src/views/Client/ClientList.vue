@@ -80,6 +80,13 @@
             </el-table-column>
         
         </el-table>
+        <pagination 
+            :total="total"
+            :pageCount="pageCount"
+            :currentPage="currentPage"
+            :pageSize="pageSize"
+            @clickpageNum="clickpageNum">
+            </pagination>
         <modal :dialogFormVisible="addModalFlag" @modalToggle="modalChange" :title="'新增'">
             <el-form ref="clientForm" :model="clientForm" :label-width="formLabelWidth" slot="content">
                 <el-form-item label="客户名称"  prop="clientName">
