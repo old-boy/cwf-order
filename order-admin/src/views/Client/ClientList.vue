@@ -93,14 +93,14 @@
                     <el-input v-model="clientForm.clientName"></el-input>
                 </el-form-item>
                 <el-form-item label="客户类型"  prop="clientType">
-                    <el-select v-model="clientForm.clientType" placeholder="请选择">
+                    <el-select v-model="clientForm.clientTypeId" value="" placeholder="请选择">
                         <el-option
                         v-for="item in types"
-                        :key="item.value"
-                        :label="item.label"
-                        :value="item.value">
-                        <span style="float: left">{{ item.label }}</span>
-                        <span style="float: right; color: #8492a6; font-size: 13px">{{ item.value }}</span>
+                        :key="item._id"
+                        :label="item.clientType"
+                        :value="item._id"
+                        @change="selectedTypeKey">
+                        <span style="float: left">{{ item.clientType }}</span>
                         </el-option>
                     </el-select>
                 </el-form-item>
@@ -121,14 +121,14 @@
                     <el-input v-model="clientForm.contactTel"></el-input>
                 </el-form-item>
                 <el-form-item label="汇款方式"  prop="pay">
-                    <el-select v-model="clientForm.pay" placeholder="请选择">
+                    <el-select v-model="clientForm.payId" placeholder="请选择">
                         <el-option
                         v-for="item in pays"
-                        :key="item.value"
-                        :label="item.label"
-                        :value="item.value">
-                        <span style="float: left">{{ item.label }}</span>
-                        <span style="float: right; color: #8492a6; font-size: 13px">{{ item.value }}</span>
+                        :key="item._id"
+                        :label="item.paymentName"
+                        :value="item._id"
+                        @change="selectedPayKey">
+                        <span style="float: left">{{ item.paymentName }}</span>
                         </el-option>
                     </el-select>
                 </el-form-item>
@@ -148,18 +148,22 @@ import pagination from '@/components/Pagination'
 export default {
     data(){
         return {
+            total:0,
+            pageCount:1,
+            currentPage:1,
+            pageSize: 10,
             formLabelWidth:'120px',
             addModalFlag: false,
             loadingFlag: false,
             clientForm:{
-                clientType:'',
+                clientTypeId:'',
                 clientName:'',
                 address:'',
                 tel:'',
                 fax:'',
                 contactPerson:'',
                 contactTel:'',
-                pay:''
+                payId:''
             },
             types:[],
             pays:[],
@@ -172,12 +176,63 @@ export default {
         },
         addModal(){
             this.addModalFlag = true;
+            this.getTypes();
+            this.getPays();
+        },
+        clickpageNum(){
+
         },
         handleSelectionChange(){
 
         },
         addClient(){
+            this.$ajax.post('/clients/add',{
+                clientName: this.clientForm.clientName,
+                address: this.clientForm.address,
+                tel: this.clientForm.tel,
+                fax: this.clientForm.fax,
+                contactPerson: this.clientForm.contactPerson,
+                contactTel: this.clientForm.contactTel,
+                clientTypeId: this.clientForm.clientTypeId,
+                payId: this.clientForm.payId
+            }).then(res => {
+                if (res.data.status === '1') {
+                this.$message({
+                    message: res.data.msg,
+                    type: 'success'
+                })
+                this.loadingData()
+                this.addModalFlag = false
+                this.resetForm('addUserForm')
+                } else {
+                this.$message.error(res.data.msg)
+                }
+            })
+        },
+        loadingData(){
 
+        },
+        getTypes(){
+            this.$ajax.get('/clients/type').then(response => {
+                let res = response.data.result;
+                this.types = res;
+            })
+        },
+        getPays(){
+            this.$ajax.get('/pay/').then(response => {
+                let res = response.data.result;
+                this.pays = res;
+            })
+        },
+        selectedTypeKey(item){
+            this.clientForm.clientTypeId = item._id;
+            console.log('clientTypeId  ' + item._id)
+        },
+        selectedPayKey(item){
+
+        },
+        resetForm(){
+            
         }
     },
     components: {

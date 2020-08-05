@@ -178,12 +178,10 @@ export default {
             }
         },
         editClientType(){
-            console.log('修改id   '  + this.typeId)
-            this.$ajax.post('/clients/type/update/' + this.typeId, this.TypeEditForm).then(res => {
-                console.log('修改res   '  + res)
+            this.$ajax.post(`/clients/type/update/${this.typeId}`, this.TypeEditForm).then(res => {
                 if (res.data.status === '1') {
                     this.$message({
-                        message: res.data.msg,
+                        message: '修改成功',
                         type: 'success'
                     })
                     this.loadData()

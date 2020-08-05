@@ -82,6 +82,15 @@
                 <el-button type="primary" @click="mofiyPay">保存</el-button>
             </div>
         </modal>
+        <modal :dialogFormVisible="removeModalFlag" @modalToggle="modalChange">
+            <p slot="content" style="text-align: center;font-size: 20px;">
+                是否删除用户？
+            </p>
+            <div slot="footer" class="dialog-footer">
+                <el-button @click="modalChange">取 消</el-button>
+                <el-button type="danger" @click="handleDelete">确 定</el-button>
+            </div>
+        </modal>
     </div>
 </template>
 <script>
@@ -112,6 +121,7 @@ export default {
             loadingFlag: false,
             addModalFlag:false,
             mofiyModalFlag:false,
+            removeModalFlag:false,
             total:0,
             pageCount:1,
             currentPage:1,
@@ -200,6 +210,7 @@ export default {
             console.log('payTotal   ' + this.total)
             })
         },
+        
         showEditModal(index,row){
             this.mofiyModalFlag = true;
             this.payId = row._id;
@@ -210,12 +221,34 @@ export default {
             this.mofiyPayForm.paymentAccount = row.paymentAccount
             this.mofiyPayForm.paymentName = row.paymentName
         },
-        showRemoveModal(){
-
+        showRemoveModal(index,row){
+            this.removeModalFlag = true;
+            this.payId = row._id;
+        },
+        handleDelete(){
+            this.$ajax.delete(`/pay/del/${this.payId}`,{
+                params: {
+                    id: this.tempId
+                }
+            }).then(res => {
+                if (res.data.status === '1') {
+                    this.$message({
+                        message: res.data.msg,
+                        type: 'success'
+                    })
+                    // 重新获取新数据
+                    this.loadingData()
+                    this.removeModalFlag = false
+                    } else {
+                    this.$message.error(res.data.msg)
+                    this.removeModalFlag = false
+                }
+            })
         },
         modalChange(){
             this.addModalFlag = false;
             this.mofiyModalFlag = false;
+            this.removeModalFlag = false;
         },
         handleSelectionChange(){
 

@@ -111,7 +111,7 @@ router.delete('/del/:id',  (req, res, next) => {
 //查询table 总数
 router.get('/total',(req,res,next) => {
 	Pay.find()
-		.countDocuments()
+		.count()
 		.then((total) => {
 			console.log('total  ' + total)
 			if(total > 0){

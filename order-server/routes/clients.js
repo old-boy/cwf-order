@@ -3,6 +3,7 @@ var router = express.Router()
 
 var Client = require('../app/models/client')
 var ClientType = require('../app/models/clientType')
+var Pay = require('../app/models/pay')
 
 var { handleError } = require('../public/util/handleError')
 var { signRequired, adminRole } = require('../middleware/auth.js')
@@ -58,23 +59,16 @@ router.get('/type/:id',(req,res,next) => {
 
 //根据 id 更新数据
 router.post('/type/update/:id',(req,res,next) => {
-	var _id = `${req.query.id}`;
-	var typeId = _id
-	ClientType.findOneAndUpdate({ _id }, req.body,(err,type) => {
-		let clientType = req.body.clientType;
-		const newType = new ClientType({
-			typeId,
-			clientType
-		});
-
-		newType.save().then(data => 
-			res.json({ 
-				status: '1', 
-				msg: "修改成功", 
-				result: data 
-			})).catch(err => console.log(err));
+	var _id = `${req.params.id}`;
+	ClientType.updateOne({ _id }, req.body, (err, pay) => {
+		if (err) {
+			res.status(500).json({ error: err });
+		} else {
+			res.status(200).send(pay);
+		}
 	})
 })
+
 
 //查询类型总数
 router.get('/total',(req,res,next) => {
