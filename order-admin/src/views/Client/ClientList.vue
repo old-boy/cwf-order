@@ -29,7 +29,7 @@
             >
             </el-table-column>
             <el-table-column
-                prop="type"
+                prop="typeName"
                 label="客户类型"
             ></el-table-column>
             <el-table-column
@@ -58,7 +58,7 @@
             >
             </el-table-column>
             <el-table-column
-                prop="pay"
+                prop="payName"
                 label="汇款方式"
             >
             </el-table-column>
@@ -72,10 +72,8 @@
                 width="400"
             >
                 <template slot-scope="scope">
-                <el-button type="primary" size="mini"  @click="showInfoModal(scope.$index, scope.row)">员工资料</el-button>
-                <el-button type="info" size="mini"  @click="showPwdModal(scope.$index, scope.row)">重设密码</el-button>
-                <el-button type="warning" size="mini"  @click="showRoleModal(scope.$index, scope.row)">权限设置</el-button>
-                <el-button type="danger" size="mini" @click="showRemoveModal(scope.$index, scope.row)">删除</el-button>
+                <el-button type="primary" size="mini"  @click="editModal(scope.$index, scope.row)">编辑</el-button>
+                <el-button type="danger" size="mini" @click="removeModal(scope.$index, scope.row)">删除</el-button>
                 </template>
             </el-table-column>
         
@@ -93,13 +91,13 @@
                     <el-input v-model="clientForm.clientName"></el-input>
                 </el-form-item>
                 <el-form-item label="客户类型"  prop="clientType">
-                    <el-select v-model="clientForm.clientTypeId" value="" placeholder="请选择">
+                    <el-select v-model="clientForm.clientTypeId" placeholder="请选择" @change="selectedTypeKey($event)">
                         <el-option
                         v-for="item in types"
                         :key="item._id"
                         :label="item.clientType"
                         :value="item._id"
-                        @change="selectedTypeKey">
+                        >
                         <span style="float: left">{{ item.clientType }}</span>
                         </el-option>
                     </el-select>
@@ -121,13 +119,13 @@
                     <el-input v-model="clientForm.contactTel"></el-input>
                 </el-form-item>
                 <el-form-item label="汇款方式"  prop="pay">
-                    <el-select v-model="clientForm.payId" placeholder="请选择">
+                    <el-select v-model="clientForm.payId" placeholder="请选择" @change="selectedPayKey($event)">
                         <el-option
                         v-for="item in pays"
                         :key="item._id"
                         :label="item.paymentName"
                         :value="item._id"
-                        @change="selectedPayKey">
+                        >
                         <span style="float: left">{{ item.paymentName }}</span>
                         </el-option>
                     </el-select>
@@ -165,10 +163,17 @@ export default {
                 contactTel:'',
                 payId:''
             },
+            clientTypeId:'',
+            payId:'',
+            typeName:'',
+            payName: '',
             types:[],
             pays:[],
             tableData:[]
         }
+    },
+    created() {
+        this.loadingData();
     },
     methods: {
         modalChange(){
@@ -210,6 +215,19 @@ export default {
             })
         },
         loadingData(){
+            this.loadingFlag = true;
+            this.$ajax.get('/clients/').then(res => {
+                console.log('data ' + res)
+                this.loadingFlag = false;
+                let data = res.data.result;
+                this.tableData = data;
+            })
+            this.totalData();
+        },
+        editModal(){
+
+        },
+        removeModal(){
 
         },
         getTypes(){
@@ -224,15 +242,23 @@ export default {
                 this.pays = res;
             })
         },
-        selectedTypeKey(item){
-            this.clientForm.clientTypeId = item._id;
-            console.log('clientTypeId  ' + item._id)
+        selectedTypeKey($event){
+            this.clientForm.clientTypeId = $event;
+       
+            // this.$ajax.get('/clients/type/' + this.clientForm.clientTypeId,{
+            //     id: this.clientForm.clientTypeId
+            // }).then(res => {
+            //     console.log('clientTypeName  ' + res)
+            // })
         },
-        selectedPayKey(item){
-
+        selectedPayKey($event){
+            this.clientForm.payId = $event;
         },
         resetForm(){
             
+        },
+        totalData(){
+
         }
     },
     components: {

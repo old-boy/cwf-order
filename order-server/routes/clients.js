@@ -36,11 +36,11 @@ router.get('/type',(req,res,next) => {
 
 //根据ID查询
 router.get('/type/:id',(req,res,next) => {
-	const _id = `${req.query.id}`;
-	console.log('typeId  ' + _id)
+	const _id = `${req.params.id}`;
+	console.log('typeId  ' + id)
 	ClientType.findById({_id})
 		.exec((type) => {
-		console.log(type)
+		console.log('type  ' + type)
 		if(type){
 			res.status(200).json({
 				status: '1',
@@ -208,7 +208,9 @@ router.post('/add',(req,res,next) => {
           tel = req.body.tel,
           fax = req.body.fax,
           contactPerson = req.body.contactPerson,
-          contactTel = req.body.contactTel;
+		  contactTel = req.body.contactTel;
+		  clientTypeId = req.body.clientTypeId;
+		  payId = req.body.payId;
 
     Client.findOne({clientName:req.body.clientName}).then((client)　=> {
         if(client){
@@ -227,10 +229,12 @@ router.post('/add',(req,res,next) => {
                 tel,
                 fax,
                 contactPerson,
-                contactTel
+				contactTel,
+				clientTypeId,
+				payId
             };
 
-            let clientEntity = new Tag(newClient)
+            let clientEntity = new Client(newClient)
             clientEntity.save(err => {
                 if (err) {
                     res.json({

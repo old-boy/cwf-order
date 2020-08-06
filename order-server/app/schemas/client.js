@@ -9,7 +9,7 @@ const clientSchema = new Schema({
         unique: true,
         type: String
     },
-    type: {
+    typeName: {
         type: ObjectId,
         ref: 'ClientType'
     },
@@ -18,7 +18,7 @@ const clientSchema = new Schema({
     fax:String,
     contactPerson:String,
     contactTel:String,
-    pay:{
+    payName:{
         type: ObjectId,
         ref:"Pay"
     },
