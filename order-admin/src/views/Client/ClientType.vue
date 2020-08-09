@@ -24,6 +24,11 @@
             width="55">
             </el-table-column>
             <el-table-column
+                prop="_id"
+                label="类型id"
+            >
+            </el-table-column>
+            <el-table-column
                 prop="clientType"
                 label="客户类型"
             >
@@ -221,7 +226,7 @@ export default {
             this.totalData();
         },
         totalData(){
-            this.$ajax.get('/clients/total').then(response => {
+            this.$ajax.get('/clients/type/total').then(response => {
             this.total = response.data.total;
             })
         },

@@ -27,24 +27,21 @@ router.get('/',(req,res,next) => {
 
 //根据ID查询
 router.get('/:id',(req,res,next) => {
-	const _id = `${req.params.id}`;
-	console.log('payID  ' + _id)
-	Pay.findById({_id})
-		.populate('info')
-		.exec((pay) => {
-		if(pay){
-			res.status(200).json({
-				status: '1',
-				msg:'',
-				result: pay
-			})
-		}else{
-			res.json({
-				status: '0',
-				msg: '帐户不存在',
-				result: ''
-			})
-		}
+	const id = `${req.params.id}`;
+	console.log('payID  ' + id)
+	Pay.findById({ _id:id })
+		.populate('payName')
+		.exec(function (err, pay) {   
+			if (err) {   
+			  return res.status(400).send({   
+				message: '不存在',   
+				result: {}   
+			  });   
+			} else {
+			  res.jsonp({   
+				result: pay   
+			  })  
+			}
 	})
 })
 // 添加付款方式

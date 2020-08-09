@@ -15,7 +15,7 @@ router.get('/type',(req,res,next) => {
     ClientType.find({})
 		.sort({'_id':1})
 		.limit(10)
-		.populate('type')
+		.populate('typeName')
 		.exec()
 		.then((types) => {
 			if (types) {
@@ -34,28 +34,27 @@ router.get('/type',(req,res,next) => {
 		})
 })
 
-//根据ID查询
+//根据typeID查询
 router.get('/type/:id',(req,res,next) => {
 	const _id = `${req.params.id}`;
-	console.log('typeId  ' + id)
+	console.log('typeId  ' + _id)
 	ClientType.findById({_id})
-		.exec((type) => {
-		console.log('type  ' + type)
-		if(type){
-			res.status(200).json({
-				status: '1',
-				msg:'',
-				result: type
-			})
-		}else{
-			res.json({
-				status: '0',
-				msg: '类型不存在',
-				result: ''
-			})
-		}
+		.populate('typeName','clientType')
+		.exec(function (err, type) {   
+			if (err) {   
+			  return res.status(400).send({   
+				message: '类型不存在',   
+				result: {}   
+			  });   
+			} else {
+			  res.jsonp({   
+				result: type   
+			  })  
+			}
 	})
 })
+
+
 
 //根据 id 更新数据
 router.post('/type/update/:id',(req,res,next) => {
@@ -72,6 +71,27 @@ router.post('/type/update/:id',(req,res,next) => {
 
 //查询类型总数
 router.get('/total',(req,res,next) => {
+	Client.find()
+		.count()
+		.then((total) => {
+			console.log('total  ' + total)
+			if(total > 0){
+				res.json({
+					status: '1',
+					msg: '',
+					total: total
+				})
+			} else {
+				res.json({
+					status: '0',
+					msg: '没有用户',
+					total: 0
+				})
+			}
+		})
+
+})
+router.get('/type/total',(req,res,next) => {
 	ClientType.find()
 		.count()
 		.then((total) => {
@@ -156,10 +176,11 @@ router.delete('/type/del/:id',(req,res,next) => {
 //查询客户
 router.get('/', (req, res, next) => {
 	Client.find({})
+		.populate('typeName')
+		.populate('payName')
 		.sort({'_id':-1})
 		.limit(10)
-		.exec()
-		.then((clients) => {
+		.exec(function (err, clients) {   
 			if (clients) {
 				res.json({
 					status: '1',
@@ -173,7 +194,7 @@ router.get('/', (req, res, next) => {
 					result: ''
 				})
 			}
-		})
+	})
 })
 
 //根据客户名称查询客户
@@ -203,14 +224,13 @@ router.get('/:name',(req,res,next) => {
 //新增客户
 router.post('/add',(req,res,next) => {
     const clientName = req.body.clientName,
-          clientType = req.body.clientType,
+		  typeName = req.body.clientTypeId;
           address = req.body.address,
           tel = req.body.tel,
           fax = req.body.fax,
           contactPerson = req.body.contactPerson,
 		  contactTel = req.body.contactTel;
-		  clientTypeId = req.body.clientTypeId;
-		  payId = req.body.payId;
+		  payName = req.body.payId;
 
     Client.findOne({clientName:req.body.clientName}).then((client)　=> {
         if(client){
@@ -224,15 +244,15 @@ router.post('/add',(req,res,next) => {
         }else{
             let newClient = {
                 clientName,
-                clientType,
+                typeName,
                 address,
                 tel,
                 fax,
                 contactPerson,
 				contactTel,
-				clientTypeId,
-				payId
+				payName
             };
+			console.log('add   ' + newClient)
 
             let clientEntity = new Client(newClient)
             clientEntity.save(err => {

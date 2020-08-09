@@ -136,6 +136,15 @@
                 <el-button type="primary" @click="addClient">保存</el-button>
             </div>
         </modal>
+        <modal :dialogFormVisible="removeModalFlag" @modalToggle="modalChange">
+            <p slot="content" style="text-align: center;font-size: 20px;">
+                是否删除用户？
+            </p>
+            <div slot="footer" class="dialog-footer">
+                <el-button @click="modalChange">取 消</el-button>
+                <el-button type="danger" @click="handleDelete">确 定</el-button>
+            </div>
+        </modal>
     </div>
 </template>
 <script>
@@ -153,6 +162,7 @@ export default {
             formLabelWidth:'120px',
             addModalFlag: false,
             loadingFlag: false,
+            removeModalFlag:false,
             clientForm:{
                 clientTypeId:'',
                 clientName:'',
@@ -163,6 +173,7 @@ export default {
                 contactTel:'',
                 payId:''
             },
+            clientId:'',
             clientTypeId:'',
             payId:'',
             typeName:'',
@@ -177,12 +188,14 @@ export default {
     },
     methods: {
         modalChange(){
-            this.addModalFlag = false
+            this.addModalFlag = false;
+            this.removeModalFlag = false;
         },
         addModal(){
             this.addModalFlag = true;
             this.getTypes();
             this.getPays();
+           
         },
         clickpageNum(){
 
@@ -193,13 +206,13 @@ export default {
         addClient(){
             this.$ajax.post('/clients/add',{
                 clientName: this.clientForm.clientName,
+                typeName: this.clientTypeId,
                 address: this.clientForm.address,
                 tel: this.clientForm.tel,
                 fax: this.clientForm.fax,
                 contactPerson: this.clientForm.contactPerson,
                 contactTel: this.clientForm.contactTel,
-                clientTypeId: this.clientForm.clientTypeId,
-                payId: this.clientForm.payId
+                payName: this.payId
             }).then(res => {
                 if (res.data.status === '1') {
                 this.$message({
@@ -217,18 +230,43 @@ export default {
         loadingData(){
             this.loadingFlag = true;
             this.$ajax.get('/clients/').then(res => {
-                console.log('data ' + res)
                 this.loadingFlag = false;
                 let data = res.data.result;
                 this.tableData = data;
-            })
+            });
+
+            console.log('typeName   ' + this.typeName)
+            console.log('payName  ' + this.payName)
+
             this.totalData();
+
         },
         editModal(){
 
         },
-        removeModal(){
-
+        removeModal(incex,row){
+            this.removeModalFlag = true;
+            this.clientId = row._id;
+        },
+        handleDelete(){
+            this.$ajax.delete(`/clients/del/${this.clientId}`,{
+                params: {
+                    id: this.clientId
+                }
+            }).then(res => {
+                if (res.data.status === '1') {
+                    this.$message({
+                        message: res.data.msg,
+                        type: 'success'
+                    })
+                    // 重新获取新数据
+                    this.loadingData()
+                    this.removeModalFlag = false
+                    } else {
+                    this.$message.error(res.data.msg)
+                    this.removeModalFlag = false
+                }
+            })
         },
         getTypes(){
             this.$ajax.get('/clients/type').then(response => {
@@ -245,20 +283,30 @@ export default {
         selectedTypeKey($event){
             this.clientForm.clientTypeId = $event;
        
-            // this.$ajax.get('/clients/type/' + this.clientForm.clientTypeId,{
-            //     id: this.clientForm.clientTypeId
-            // }).then(res => {
-            //     console.log('clientTypeName  ' + res)
-            // })
+            this.$ajax.get(`/clients/type/${this.clientForm.clientTypeId}`,{
+                id: this.clientForm.clientTypeId
+            }).then(res => {
+                this.typeName = res.data.result.clientType;
+                this.clientTypeId = res.data.result._id;
+            })
         },
         selectedPayKey($event){
             this.clientForm.payId = $event;
+
+            this.$ajax.get(`/pay/${this.clientForm.payId}`,{
+                id: this.clientForm.payId
+            }).then(res => {
+                this.payName = res.data.result.paymentName;
+                this.payId = res.data.result._id;
+            })
         },
         resetForm(){
             
         },
         totalData(){
-
+             this.$ajax.get('/clients/total').then(response => {
+                this.total = response.data.total;
+            })
         }
     },
     components: {
