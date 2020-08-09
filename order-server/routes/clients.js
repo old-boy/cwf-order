@@ -15,7 +15,6 @@ router.get('/type',(req,res,next) => {
     ClientType.find({})
 		.sort({'_id':1})
 		.limit(10)
-		.populate('typeName')
 		.exec()
 		.then((types) => {
 			if (types) {
@@ -54,8 +53,6 @@ router.get('/type/:id',(req,res,next) => {
 	})
 })
 
-
-
 //根据 id 更新数据
 router.post('/type/update/:id',(req,res,next) => {
 	var _id = `${req.params.id}`;
@@ -68,50 +65,6 @@ router.post('/type/update/:id',(req,res,next) => {
 	})
 })
 
-
-//查询类型总数
-router.get('/total',(req,res,next) => {
-	Client.find()
-		.count()
-		.then((total) => {
-			console.log('total  ' + total)
-			if(total > 0){
-				res.json({
-					status: '1',
-					msg: '',
-					total: total
-				})
-			} else {
-				res.json({
-					status: '0',
-					msg: '没有用户',
-					total: 0
-				})
-			}
-		})
-
-})
-router.get('/type/total',(req,res,next) => {
-	ClientType.find()
-		.count()
-		.then((total) => {
-			console.log('total  ' + total)
-			if(total > 0){
-				res.json({
-					status: '1',
-					msg: '',
-					total: total
-				})
-			} else {
-				res.json({
-					status: '0',
-					msg: '没有用户',
-					total: 0
-				})
-			}
-		})
-
-})
 
 //新增类型
 router.post('/type/add',(req,res,next) => {
@@ -173,6 +126,15 @@ router.delete('/type/del/:id',(req,res,next) => {
 	})
 })
 
+
+
+
+
+
+
+
+
+
 //查询客户
 router.get('/', (req, res, next) => {
 	Client.find({})
@@ -180,7 +142,7 @@ router.get('/', (req, res, next) => {
 		.populate('payName')
 		.sort({'_id':-1})
 		.limit(10)
-		.exec(function (err, clients) {   
+		.exec((err, clients) => {
 			if (clients) {
 				res.json({
 					status: '1',
@@ -194,9 +156,30 @@ router.get('/', (req, res, next) => {
 					result: ''
 				})
 			}
-	})
+		})
 })
+//查询类型总数
+router.get('/total',(req,res,next) => {
+	Client.find()
+		.count()
+		.then((total) => {
+			console.log('total  ' + total)
+			if(total > 0){
+				res.json({
+					status: '1',
+					msg: '',
+					total: total
+				})
+			} else {
+				res.json({
+					status: '0',
+					msg: '没有用户',
+					total: 0
+				})
+			}
+		})
 
+})
 //根据客户名称查询客户
 router.get('/:name',(req,res,next) => {
     const name = req.params.name;
@@ -223,14 +206,15 @@ router.get('/:name',(req,res,next) => {
 
 //新增客户
 router.post('/add',(req,res,next) => {
+	console.log('add    ' + req.body)
     const clientName = req.body.clientName,
-		  typeName = req.body.clientTypeId;
+		  typeName = req.body.typeName,
           address = req.body.address,
           tel = req.body.tel,
           fax = req.body.fax,
           contactPerson = req.body.contactPerson,
-		  contactTel = req.body.contactTel;
-		  payName = req.body.payId;
+		  contactTel = req.body.contactTel,
+		  payName = req.body.payName;
 
     Client.findOne({clientName:req.body.clientName}).then((client)　=> {
         if(client){
@@ -252,7 +236,7 @@ router.post('/add',(req,res,next) => {
 				contactTel,
 				payName
             };
-			console.log('add   ' + newClient)
+			
 
             let clientEntity = new Client(newClient)
             clientEntity.save(err => {

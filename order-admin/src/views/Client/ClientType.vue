@@ -223,7 +223,7 @@ export default {
                 this.tableData = res;
             })
 
-            this.totalData();
+            // this.totalData();
         },
         totalData(){
             this.$ajax.get('/clients/type/total').then(response => {

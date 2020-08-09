@@ -76,7 +76,6 @@
                 <el-button type="danger" size="mini" @click="removeModal(scope.$index, scope.row)">删除</el-button>
                 </template>
             </el-table-column>
-        
         </el-table>
         <pagination 
             :total="total"
@@ -90,7 +89,7 @@
                 <el-form-item label="客户名称"  prop="clientName">
                     <el-input v-model="clientForm.clientName"></el-input>
                 </el-form-item>
-                <el-form-item label="客户类型"  prop="clientType">
+                <el-form-item label="客户类型"  prop="typeName">
                     <el-select v-model="clientForm.clientTypeId" placeholder="请选择" @change="selectedTypeKey($event)">
                         <el-option
                         v-for="item in types"
@@ -118,7 +117,7 @@
                 <el-form-item label="联系人电话"  prop="contactTel">
                     <el-input v-model="clientForm.contactTel"></el-input>
                 </el-form-item>
-                <el-form-item label="汇款方式"  prop="pay">
+                <el-form-item label="汇款方式"  prop="payName">
                     <el-select v-model="clientForm.payId" placeholder="请选择" @change="selectedPayKey($event)">
                         <el-option
                         v-for="item in pays"
@@ -185,6 +184,7 @@ export default {
     },
     created() {
         this.loadingData();
+        this.totalData();
     },
     methods: {
         modalChange(){
@@ -195,7 +195,6 @@ export default {
             this.addModalFlag = true;
             this.getTypes();
             this.getPays();
-           
         },
         clickpageNum(){
 
@@ -204,6 +203,7 @@ export default {
 
         },
         addClient(){
+            //其它关联的表要传id回去
             this.$ajax.post('/clients/add',{
                 clientName: this.clientForm.clientName,
                 typeName: this.clientTypeId,
@@ -221,7 +221,7 @@ export default {
                 })
                 this.loadingData()
                 this.addModalFlag = false
-                this.resetForm('addUserForm')
+                this.resetForm('clientForm')
                 } else {
                 this.$message.error(res.data.msg)
                 }
@@ -231,15 +231,39 @@ export default {
             this.loadingFlag = true;
             this.$ajax.get('/clients/').then(res => {
                 this.loadingFlag = false;
+                console.log('客户表为  ' + res)
                 let data = res.data.result;
-                this.tableData = data;
+                let arr = [];
+
+                for(var i = 0; i < data.length; i++){
+                    let _id = data[i]._id;
+                    let clientName = data[i].clientName;
+                    let typeName = data[i].typeName.clientType;
+                    let address = data[i].address;
+                    let tel = data[i].tel;
+                    let fax = data[i].fax;
+                    let contactPerson = data[i].contactPerson;
+                    let contactTel = data[i].contactTel;
+                    let payName = data[i].payName.paymentName;
+                    let createdAt = data[i].createdAt;
+
+                    let dataEntity = {
+                        _id,
+                        clientName,
+                        typeName,
+                        address,
+                        tel,
+                        fax,
+                        contactPerson,
+                        contactTel,
+                        payName,
+                        createdAt
+                    }
+                    arr.push(dataEntity);
+                };
+                this.tableData = arr;
+                this.totalData();
             });
-
-            console.log('typeName   ' + this.typeName)
-            console.log('payName  ' + this.payName)
-
-            this.totalData();
-
         },
         editModal(){
 
@@ -260,10 +284,9 @@ export default {
                         type: 'success'
                     })
                     // 重新获取新数据
-                    this.loadingData()
+                    this.loadingData();
                     this.removeModalFlag = false
                     } else {
-                    this.$message.error(res.data.msg)
                     this.removeModalFlag = false
                 }
             })
@@ -300,13 +323,13 @@ export default {
                 this.payId = res.data.result._id;
             })
         },
-        resetForm(){
-            
-        },
         totalData(){
              this.$ajax.get('/clients/total').then(response => {
                 this.total = response.data.total;
             })
+        },
+        resetForm (formName) {
+            this.$refs[formName].resetFields()
         }
     },
     components: {

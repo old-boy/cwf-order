@@ -6,7 +6,6 @@ router.get('/',(req,res,next) => {
     Pay.find({})
 		.sort({'_id':-1})
 		.limit(10)
-		.populate('type')
 		.exec()
 		.then((pays) => {
 			if (pays) {
