@@ -1,0 +1,1 @@
+{"options":{},"indexes":[{"v":{"$numberInt":"2"},"key":{"_id":{"$numberInt":"1"}},"name":"_id_","ns":"social.log"},{"v":{"$numberInt":"2"},"key":{"typeid":{"$numberInt":"1"},"type":{"$numberInt":"1"}},"name":"typeid_1_type_1","ns":"social.log"},{"v":{"$numberInt":"2"},"key":{"uid":{"$numberInt":"1"}},"name":"uid_1","ns":"social.log"}],"uuid":"0f9e2698da2a41d28830e5ec6e4b4a2d"}

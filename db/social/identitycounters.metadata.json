@@ -1,0 +1,1 @@
+{"options":{},"indexes":[{"v":{"$numberInt":"2"},"key":{"_id":{"$numberInt":"1"}},"name":"_id_","ns":"social.identitycounters"}],"uuid":"6c36e614734b4003b83a9a807fe748f6"}

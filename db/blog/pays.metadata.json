@@ -1,0 +1,1 @@
+{"options":{},"indexes":[{"v":{"$numberInt":"2"},"key":{"_id":{"$numberInt":"1"}},"name":"_id_","ns":"blog.pays"},{"v":{"$numberInt":"2"},"unique":true,"key":{"paymentAccount":{"$numberInt":"1"}},"name":"paymentAccount_1","ns":"blog.pays","background":true}],"uuid":"c02939855021435f921b83f36c3e1c21"}
