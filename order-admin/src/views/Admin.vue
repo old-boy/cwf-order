@@ -101,7 +101,7 @@
                     v-else
                   />
                 </div>
-                <el-dropdown>
+                <el-dropdown @command="loginOut">
                   <span class="el-dropdown-link">
                     {{ formatRole
                     }}<i class="el-icon-arrow-down el-icon--right"></i>
@@ -109,7 +109,7 @@
                   <el-dropdown-menu slot="dropdown">
                     <!-- <el-dropdown-item command="1">基本资料</el-dropdown-item>
                     <el-dropdown-item command="2">修改密码</el-dropdown-item> -->
-                    <el-dropdown-item command="3" @click="loginOut">退出</el-dropdown-item
+                    <el-dropdown-item command="3">退出</el-dropdown-item
                     >
                   </el-dropdown-menu>
                   <h4 class="login-name">{{ username }}</h4>
@@ -148,20 +148,22 @@ export default {
         ])
     },
     methods: {
-      loginOut(){
-        console.log('loginOut')
-        this.$ajax.get('/users/logout').then(res => {
-              if (res.data.status === '1') {
-                  console.log(res.data.status)
-                  this.$store.commit('SET_USERID', '')
-                  this.$store.commit('SET_USERNAME', '')
-                  this.$store.commit('SET_AVATAR', '')
-                  this.$store.commit('SET_INFOID', '')
-                  this.$store.commit('SET_ROLE', '')
-                  delCookie('sessionId')
-                  this.$router.push('/')
-              }
-          })
+      loginOut(command){
+        console.log('command  ' + command)
+          if(command === '3'){
+              this.$ajax.get('/users/logout').then(res => {
+                    if (res.data.status === '1') {
+                        console.log(res.data.status)
+                        this.$store.commit('SET_USERID', '')
+                        this.$store.commit('SET_USERNAME', '')
+                        this.$store.commit('SET_AVATAR', '')
+                        this.$store.commit('SET_INFOID', '')
+                        this.$store.commit('SET_ROLE', '')
+                        delCookie('sessionId')
+                        this.$router.push('/')
+                    }
+                })
+          }
       },
       handleOpen (key, keyPath) {
         // console.log(key, keyPath)
