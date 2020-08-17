@@ -12,7 +12,7 @@ var users = require('./routes/users')
 var clients = require('./routes/clients')
 var tags = require('./routes/tags')
 var pays = require('./routes/pay')
-var orderType = require('./routes/orderType')
+var orders = require('./routes/order')
 
 
 var app = express()
@@ -101,7 +101,7 @@ app.use('/users', users)
 app.use('/clients', clients)
 app.use('/tag',tags)
 app.use('/pay',pays)
-app.use('/order/type',orderType)
+app.use('/order',orders)
 
 
 // catch 404 and forward to error handler

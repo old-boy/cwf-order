@@ -9,6 +9,7 @@ const orderTypeSchema = new Schema({
         unique: true,
         type: String
     },
+    orderTypeDes: String,
     createdAt: {
         type: Date,
         defalut: Date.now()

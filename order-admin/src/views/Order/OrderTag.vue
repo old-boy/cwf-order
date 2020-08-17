@@ -24,16 +24,15 @@
       width="55">
     </el-table-column>
       <el-table-column
-        prop="tagNamg"
-        label="标签名称"
+        prop="orderType"
+        label="订单类型"
       >
       </el-table-column>
-      <el-table-column
-        prop="tagType"
-        label="标签类型"
-      ></el-table-column>
-      
-      
+       <el-table-column
+        prop="orderTypeDes"
+        label="类型描述"
+      >
+      </el-table-column>
       <el-table-column
         label="操作"
         width="400"
@@ -52,14 +51,17 @@
         @clickpageNum="clickpageNum">
         </pagination>
         <modal :dialogFormVisible="addModalFlag" @modalToggle="modalChange" :title="'新增'">
-            <el-form ref="typeForm" :model="typeForm" :label-width="formLabelWidth" slot="content">
+            <el-form ref="typeForm" :model="typeForm" :rules="rules" :label-width="formLabelWidth" slot="content">
                 <el-form-item label="订单类型"  prop="orderType">
                     <el-input v-model="typeForm.orderType"></el-input>
                 </el-form-item>
+                 <el-form-item label="类型描述"  prop="orderTypeDes">
+                    <el-input v-model="typeForm.orderTypeDes"></el-input>
+                </el-form-item>
             </el-form>
             <div slot="footer" class="dialog-footer">
-                <el-button type="danger" native-type="reset">重置</el-button>
-                <el-button type="primary" @click="addType">保存</el-button>
+                <el-button type="danger" native-type="reset" @click="resetForm('typeForm')">重置</el-button>
+                <el-button type="primary" @click="addType('typeForm')">保存</el-button>
             </div>
         </modal>
         <modal :dialogFormVisible="editModalFlag" @modalToggle="modalChange" :title="'编辑'">
@@ -67,9 +69,12 @@
                 <el-form-item label="订单类型"  prop="orderType">
                     <el-input v-model="TypeEditForm.orderType"></el-input>
                 </el-form-item>
+                <el-form-item label="类型描述"  prop="orderTypeDes">
+                    <el-input v-model="TypeEditForm.orderTypeDes"></el-input>
+                </el-form-item>
             </el-form>
             <div slot="footer" class="dialog-footer">
-                <el-button type="danger" native-type="reset">重置</el-button>
+                <el-button type="danger" native-type="reset" @click="resetForm('TypeEditForm')">重置</el-button>
                 <el-button type="primary" @click="editClientType">保存</el-button>
             </div>
         </modal>
@@ -111,14 +116,23 @@ export default {
           editModalFlag: false,
           removeModalFlag:false,
           tableData:[],
-          tagNamg:"",
-          tagType:"",
           typeId:'',
           typeForm:{
-            orderType:''
+            orderType:'',
+            orderTypeDes:''
           },
           TypeEditForm:{
-            orderType:''
+            orderType:'',
+            orderTypeDes:''
+          },
+          ruleForm:{
+            orderType:'',
+            orderTypeDes:''
+          },
+          rules:{
+            orderType:[
+              { required: true, message: '请输入类型名称', trigger: 'blur' },
+            ]
           },
           formLabelWidth: '120px',
             // 验证密码的规则
@@ -131,6 +145,10 @@ export default {
     },
     watch: {
       
+    },
+    created() {
+        this.loadData();
+        // this.totalData();
     },
     methods: {
       clickpageNum(index){
@@ -147,6 +165,7 @@ export default {
       showEditModal(index,row){
           this.editModalFlag = true;
           this.TypeEditForm.orderType = row.orderType;
+          this.TypeEditForm.orderTypeDes = row.orderTypeDes;
           // this.$store.commit('SET_TYPEID', row._id)
           this.typeId = row._id;
       },
@@ -157,31 +176,40 @@ export default {
       loadData(){
         this.loadingFlag = true;
             
-        this.$ajax.get('/order/type/').then(response => {
+        this.$ajax.get('/order/type').then(response => {
             this.loadingFlag = false
             let res = response.data.result;
             // console.log('clients  ' + res)
             this.tableData = res;
         })
       },
-      addType(){
-        if(this.typeForm.orderType != ''){
-              this.$ajax.post('/order/type/add',{
-                  orderType: this.typeForm.orderType
-              }).then(res => {
-                  if (res.data.status === '1') {
-                  this.$message({
-                      message: res.data.msg,
-                      type: 'success'
-                  })
-                  this.loadData()
-                  this.addModalFlag = false
-                  this.resetForm('typeForm')
-                  } else {
-                  this.$message.error(res.data.msg)
-                  }
-              })
+      addType(formName){
+        this.$refs[formName].validate((valid) => {
+          if (valid) {
+            // console.log('valid   ' + valid)
+              if(this.typeForm.orderType != ''){
+                this.$ajax.post('/order/type/add',{
+                    orderType: this.typeForm.orderType,
+                    orderTypeDes: this.typeForm.orderTypeDes
+                }).then(res => {
+                    if (res.data.status === '1') {
+                    this.$message({
+                        message: res.data.msg,
+                        type: 'success'
+                    })
+                    this.loadData()
+                    this.addModalFlag = false
+                    this.resetForm('typeForm')
+                    } else {
+                    this.$message.error(res.data.msg)
+                    }
+                })
+            }
+          } else {
+            return false;
           }
+        });
+        
       },
       editClientType(){
         this.$ajax.post(`/order/type/update/${this.typeId}`, this.TypeEditForm).then(res => {
@@ -216,12 +244,12 @@ export default {
       },
       totalData(){
           this.$ajax.get('/order/type/total').then(response => {
-          this.total = response.data.total;
+            this.total = response.data.total;
           })
       },
       
-      resetForm (formName) {
-          this.$refs[formName].resetFields()
+      resetForm(formName) {
+        this.$refs[formName].resetFields();
       }
     },
 

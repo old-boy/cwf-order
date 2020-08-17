@@ -3,13 +3,8 @@ var router = express.Router()
 
 var OrderType = require('../app/models/orderType')
 
-var { handleError } = require('../public/util/handleError')
-var { signRequired, adminRole } = require('../middleware/auth.js')
-
-router.use(signRequired)
-
-//查询客户类型
-router.get('/',(req,res,next) => {
+//查询订单类型
+router.get('/type',(req,res,next) => {
     OrderType.find({})
 		.sort({'_id':1})
 		.limit(10)
@@ -32,7 +27,7 @@ router.get('/',(req,res,next) => {
 })
 
 //根据typeID查询
-router.get('/:id',(req,res,next) => {
+router.get('/type/:id',(req,res,next) => {
 	const _id = `${req.params.id}`;
 	console.log('typeId  ' + _id)
 	OrderType.findById({_id})
@@ -51,7 +46,7 @@ router.get('/:id',(req,res,next) => {
 })
 
 //根据 id 更新数据
-router.post('/update/:id',(req,res,next) => {
+router.post('/type/update/:id',(req,res,next) => {
 	var _id = `${req.params.id}`;
 	OrderType.updateOne({ _id }, req.body, (err, pay) => {
 		if (err) {
@@ -64,9 +59,10 @@ router.post('/update/:id',(req,res,next) => {
 
 
 //新增类型
-router.post('/add',(req,res,next) => {
-    const orderType = req.body.orderType;
-
+router.post('/type/add',(req,res,next) => {
+	const orderType = req.body.orderType;
+	const orderTypeDes = req.body.orderTypeDes;
+	console.log('orderType   ' + orderType)
     OrderType.findOne({orderType:req.body.orderType}).then((type)　=> {
         if(type){
             return res.status(400).json(
@@ -78,10 +74,11 @@ router.post('/add',(req,res,next) => {
 			);
         }else{
             let newOrderType = {
-                orderType
+				orderType,
+				orderTypeDes
             };
 
-            let typeEntity = new OderType(newOrderType)
+            let typeEntity = new OrderType(newOrderType)
             typeEntity.save(err => {
                 if (err) {
                     res.json({
@@ -102,7 +99,7 @@ router.post('/add',(req,res,next) => {
 })
 
 //删除客户类型
-router.delete('/del/:id',(req,res,next) => {
+router.delete('/type/del/:id',(req,res,next) => {
 	const id = `${req.params.id}`;
 	OrderType.deleteOne({ _id: id }).then((type) => {
 		console.log(type)
@@ -122,8 +119,8 @@ router.delete('/del/:id',(req,res,next) => {
 	})
 })
 
-router.get('/total',(req,res,next) => {
-	OrderType.find()
+router.get('/type/total',(req,res,next) => {
+	OrderType.find({})
 		.count()
 		.then((total) => {
 			console.log('total  ' + total)

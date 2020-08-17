@@ -1,6 +1,6 @@
 var mongoose = require('mongoose')
-var orderTypeSchema = require('./../schemas/orderType')
+var orderTypeSchema = require('../schemas/orderType')
 
-var orderType = mongoose.model('OrderType', orderTypeSchema)
+var OrderType = mongoose.model('OrderType', orderTypeSchema)
 
-module.exports = orderType
+module.exports = OrderType
