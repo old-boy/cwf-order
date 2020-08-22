@@ -10,8 +10,8 @@ const ProductSchema = new mongoose.Schema({
         type: String
     },
     productNum:Number,
-    unitPrice:String,
-    specialClaim:String,
+    productGroup:String,
+    productPrice:Number,
     createdAt: {
         type: Date,
         defalut: Date.now()

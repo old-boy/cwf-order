@@ -41,6 +41,9 @@
                   <el-menu-item index="2-2" route="/order/tag"
                     >订单标签</el-menu-item
                   >
+                  <el-menu-item index="2-3" route="/product/list"
+                    >产品列表</el-menu-item
+                  >
                 </el-menu-item-group>
                 <el-menu-item-group>
                   <template slot="title">合同</template>

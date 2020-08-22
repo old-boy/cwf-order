@@ -13,6 +13,7 @@ import ClientList from '@/views/Client/ClientList'
 import ClientType from '@/views/Client/ClientType'
 import Payment from '@/views/Client/Payment'
 import Comment from '@/views/Comments/Comment'
+import Product from '@/views/Product/Product'
 
 Vue.use(Router)
 
@@ -58,6 +59,11 @@ export default new Router({
           path: '/order/tag',
           name: 'OrderTag',
           component: OrderTag
+        },
+        {
+          path: '/product/list',
+          name: 'Product',
+          component: Product
         },
         {
           path: '/sales/list',
