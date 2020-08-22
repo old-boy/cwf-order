@@ -102,11 +102,11 @@ router.post('/add',(req,res,next) => {
 //根据 id 更新数据
 router.post('/update/:id',(req,res,next) => {
 	var _id = `${req.params.id}`;
-	Product.updateOne({ _id }, req.body, (err, pay) => {
+	Product.updateOne({ _id }, req.body, (err, product) => {
 		if (err) {
 			res.status(500).json({ error: err });
 		} else {
-			res.status(200).send(pay);
+			res.status(200).send(product);
 		}
 	})
 })
@@ -115,8 +115,7 @@ router.post('/update/:id',(req,res,next) => {
 router.delete('/del/:id',(req,res,next) => {
     const id = `${req.params.id}`;
 	Product.deleteOne({ _id: id }).then((product) => {
-		// console.log(user)
-		if(tag){
+		if(product){
 			res.status(200).json({
 				status: '1',
 				msg: '删除成功',
@@ -125,7 +124,7 @@ router.delete('/del/:id',(req,res,next) => {
 		}else{
 			res.status(400).json({
 				status: '0',
-				msg: '产品不存在',
+				msg: '不存在',
 				result: ''
 			})
 		}

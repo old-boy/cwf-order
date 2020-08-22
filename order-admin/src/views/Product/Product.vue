@@ -105,7 +105,7 @@
             </el-form>
             <div slot="footer" class="dialog-footer">
                 <el-button type="danger" native-type="reset" @click="resetForm('ProductEditForm')">重置</el-button>
-                <el-button type="primary" @click="editProduct">保存</el-button>
+                <el-button type="primary" @click="editProduct('ProductEditForm')">保存</el-button>
             </div>
         </modal>
         <modal :dialogFormVisible="removeModalFlag" @modalToggle="modalChange">
@@ -240,20 +240,23 @@ export default {
         });
         
       },
-      editProduct(){
-        this.$ajax.post(`/product/update/${this.productId}`, this.ProductEditForm).then(res => {
-              if (res.data.status === '1') {
+      editProduct(formName){
+        this.$refs[formName].validate((valid) => {
+          if (valid) {
+            this.$ajax.post(`/product/update/${this.productId}`, this.ProductEditForm).then(res => {
+              console.log('product edit   ' + res)
+              if (res.status === '200') {
                   this.$message({
                       message: '修改成功',
                       type: 'success'
                   })
-                  this.loadData()
-                  this.editModalFlag = false;
-                  this.resetForm('TypeEditForm')
-              }else{
-                  this.$message.error(res.data.msg)
-              }
-          })
+                }
+                this.loadData()
+                this.editModalFlag = false;
+                this.resetForm('ProductEditForm')
+            })
+          }
+        })
       },
       handleDelete(){
           this.$ajax.delete(`/product/del/${this.productId}`).then(res => {

@@ -85,7 +85,7 @@
             @clickpageNum="clickpageNum">
             </pagination>
         <modal :dialogFormVisible="addModalFlag" @modalToggle="modalChange" :title="'新增'">
-            <el-form ref="clientForm" :model="clientForm" :label-width="formLabelWidth" slot="content">
+            <el-form ref="clientForm" :rules="rules" :model="clientForm" :label-width="formLabelWidth" slot="content">
                 <el-form-item label="客户名称"  prop="clientName">
                     <el-input v-model="clientForm.clientName"></el-input>
                 </el-form-item>
@@ -132,7 +132,7 @@
             </el-form>
             <div slot="footer" class="dialog-footer">
                 <el-button type="danger" native-type="reset">重置</el-button>
-                <el-button type="primary" @click="addClient">保存</el-button>
+                <el-button type="primary" @click="addClient('clientForm')">保存</el-button>
             </div>
         </modal>
         <modal :dialogFormVisible="removeModalFlag" @modalToggle="modalChange">
@@ -179,7 +179,27 @@ export default {
             payName: '',
             types:[],
             pays:[],
-            tableData:[]
+            tableData:[],
+            rules:{
+                clientName:[
+                    { required: true, message: '请输入客户名称', trigger: 'blur' }
+                ],
+                address:[
+                    { required: true, message: '请输入客户地址', trigger: 'blur' }
+                ],
+                tel:[
+                    { required: true, message: '请输入客户电话', trigger: 'blur' }
+                ],
+                fax:[
+                    { required: false, message: '请输入传真', trigger: 'blur' }
+                ],
+                contactPerson:[
+                    { required: true, message: '请输入联系人', trigger: 'blur' }
+                ],
+                contactTel:[
+                    { required: true, message: '请输入联系人电话', trigger: 'blur' }
+                ],
+            }
         }
     },
     created() {
@@ -202,30 +222,37 @@ export default {
         handleSelectionChange(){
 
         },
-        addClient(){
-            //其它关联的表要传id回去
-            this.$ajax.post('/clients/add',{
-                clientName: this.clientForm.clientName,
-                typeName: this.clientTypeId,
-                address: this.clientForm.address,
-                tel: this.clientForm.tel,
-                fax: this.clientForm.fax,
-                contactPerson: this.clientForm.contactPerson,
-                contactTel: this.clientForm.contactTel,
-                payName: this.payId
-            }).then(res => {
-                if (res.data.status === '1') {
-                this.$message({
-                    message: res.data.msg,
-                    type: 'success'
-                })
-                this.loadingData()
-                this.addModalFlag = false
-                this.resetForm('clientForm')
-                } else {
-                this.$message.error(res.data.msg)
+        addClient(formName){
+            this.$refs[formName].validate((valid) => {
+                if(valid){
+                    //其它关联的表要传id回去
+                    this.$ajax.post('/clients/add',{
+                        clientName: this.clientForm.clientName,
+                        typeName: this.clientTypeId,
+                        address: this.clientForm.address,
+                        tel: this.clientForm.tel,
+                        fax: this.clientForm.fax,
+                        contactPerson: this.clientForm.contactPerson,
+                        contactTel: this.clientForm.contactTel,
+                        payName: this.payId
+                    }).then(res => {
+                        if (res.data.status === '1') {
+                        this.$message({
+                            message: res.data.msg,
+                            type: 'success'
+                        })
+                        this.loadingData()
+                        this.addModalFlag = false
+                        this.resetForm('clientForm')
+                        } else {
+                        this.$message.error(res.data.msg)
+                        }
+                    })
+                }else{
+                    return false;
                 }
             })
+            
         },
         loadingData(){
             this.loadingFlag = true;
