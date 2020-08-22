@@ -8,7 +8,7 @@
           </el-breadcrumb>
       </el-col>
       <el-col :span="1" :offset="10">
-          <el-button @click="addModalProduct = true" type="success" size="mini">添加</el-button>
+          <el-button @click="addModalFlag = true" type="success" size="mini">添加</el-button>
       </el-col>
     </el-row>
     <el-table
@@ -35,12 +35,12 @@
       </el-table-column>
       <el-table-column
         prop="productPrice"
-        label="产品单价"
+        label="产品单价(元)"
       >
       </el-table-column>
       <el-table-column
         prop="productNum"
-        label="产品数量"
+        label="产品数量(袋)"
       >
       </el-table-column>
       <el-table-column
@@ -69,10 +69,14 @@
                     <el-input v-model="productForm.productGroup"></el-input>
                 </el-form-item>
                  <el-form-item label="产品单价"  prop="productPrice">
-                    <el-input v-model="productForm.productPrice"></el-input>
+                    <el-input v-model="productForm.productPrice">
+                        <template slot="append">元</template>
+                    </el-input>
                 </el-form-item>
                  <el-form-item label="产品数量"  prop="productNum">
-                    <el-input v-model="productForm.productNum"></el-input>
+                    <el-input v-model="productForm.productNum">
+                        <template slot="append">袋</template>
+                    </el-input>
                 </el-form-item>
             </el-form>
             <div slot="footer" class="dialog-footer">
@@ -89,10 +93,14 @@
                     <el-input v-model="ProductEditForm.productGroup"></el-input>
                 </el-form-item>
                  <el-form-item label="产品单价"  prop="productPrice">
-                    <el-input v-model="ProductEditForm.productPrice"></el-input>
+                    <el-input v-model="ProductEditForm.productPrice">
+                        <template slot="append">元</template>
+                    </el-input>
                 </el-form-item>
                  <el-form-item label="产品数量"  prop="productNum">
-                    <el-input v-model="ProductEditForm.productNum"></el-input>
+                    <el-input v-model="ProductEditForm.productNum">
+                        <template slot="append">袋</template>
+                    </el-input>
                 </el-form-item>
             </el-form>
             <div slot="footer" class="dialog-footer">
@@ -121,13 +129,6 @@ export default {
         pagination
     },
     data(){
-      var validateName = (rule, value, callback) => {
-          if (value === '') {
-            callback(new Error('名称不能为空'))
-          } else {
-            callback()
-          }
-        }
         return {
           total:0,
           pageCount:1,
@@ -159,8 +160,7 @@ export default {
           },
           rules:{
             productName:[
-              { required: true, message: '请输入产品名称', trigger: 'blur' },
-              { min: 3, max: 5, message: '长度在 3 到 5 个字符', trigger: 'blur' }
+              { required: true, message: '请输入产品名称', trigger: 'blur' }
             ],
             productGroup:[
               { required: true, message: '请输入产品系列名称', trigger: 'blur' }
@@ -170,12 +170,7 @@ export default {
             ]
           },
           formLabelWidth: '120px',
-            // 验证密码的规则
-            rules: {
-                clientType: [
-                    { validator: validateType, trigger: 'blur' }
-                ]
-            }
+           
         }
     },
     watch: {
@@ -183,7 +178,6 @@ export default {
     },
     created() {
         this.loadData();
-        // this.totalData();
     },
     methods: {
       clickpageNum(index){
@@ -199,34 +193,34 @@ export default {
       },
       showEditModal(index,row){
           this.editModalFlag = true;
-          this.TypeEditForm.orderType = row.orderType;
-          this.TypeEditForm.orderTypeDes = row.orderTypeDes;
+          this.ProductEditForm.productName = row.productName;
+          this.ProductEditForm.productGroup = row.productGroup;
+          this.ProductEditForm.productPrice = row.productPrice;
+          this.ProductEditForm.productNum = row.productNum;
           // this.$store.commit('SET_TYPEID', row._id)
-          this.typeId = row._id;
+          this.productId = row._id;
       },
       showRemoveModal(index,row){
           this.removeModalFlag = true;
-          this.typeId = row._id;
+          this.productId = row._id;
       },
       loadData(){
         this.loadingFlag = true;
             
-        this.$ajax.get('/order/type').then(response => {
+        this.$ajax.get('/product/').then(response => {
             this.loadingFlag = false
             let res = response.data.result;
+            this.total = response.data.result.length;
             // console.log('clients  ' + res)
             this.tableData = res;
         })
       },
-      addType(formName){
+      addProduct(formName){
         this.$refs[formName].validate((valid) => {
           if (valid) {
             // console.log('valid   ' + valid)
-              if(this.typeForm.orderType != ''){
-                this.$ajax.post('/order/type/add',{
-                    orderType: this.typeForm.orderType,
-                    orderTypeDes: this.typeForm.orderTypeDes
-                }).then(res => {
+              if(this.productForm.productName != ''){
+                this.$ajax.post('/product/add',this.productForm).then(res => {
                     if (res.data.status === '1') {
                     this.$message({
                         message: res.data.msg,
@@ -234,7 +228,7 @@ export default {
                     })
                     this.loadData()
                     this.addModalFlag = false
-                    this.resetForm('typeForm')
+                    this.resetForm('ProductEditForm')
                     } else {
                     this.$message.error(res.data.msg)
                     }
@@ -246,8 +240,8 @@ export default {
         });
         
       },
-      editClientType(){
-        this.$ajax.post(`/order/type/update/${this.typeId}`, this.TypeEditForm).then(res => {
+      editProduct(){
+        this.$ajax.post(`/product/update/${this.productId}`, this.ProductEditForm).then(res => {
               if (res.data.status === '1') {
                   this.$message({
                       message: '修改成功',
@@ -262,7 +256,7 @@ export default {
           })
       },
       handleDelete(){
-          this.$ajax.delete(`/order/type/del/${this.typeId}`).then(res => {
+          this.$ajax.delete(`/product/del/${this.productId}`).then(res => {
                 if (res.data.status === '1') {
                 this.$message({
                     message: res.data.msg,
@@ -277,14 +271,12 @@ export default {
             }
          })
       },
-      totalData(){
-          this.$ajax.get('/order/type/total').then(response => {
-            this.total = response.data.total;
-          })
-      },
+    
       
       resetForm(formName) {
-        this.$refs[formName].resetFields();
+          this.$nextTick(() => {
+            this.$refs[formName].resetFields();
+          })
       }
     },
 

@@ -99,6 +99,18 @@ router.post('/add',(req,res,next) => {
     })
 })
 
+//根据 id 更新数据
+router.post('/update/:id',(req,res,next) => {
+	var _id = `${req.params.id}`;
+	Product.updateOne({ _id }, req.body, (err, pay) => {
+		if (err) {
+			res.status(500).json({ error: err });
+		} else {
+			res.status(200).send(pay);
+		}
+	})
+})
+
 //删除tags
 router.delete('/del/:id',(req,res,next) => {
     const id = `${req.params.id}`;
@@ -118,6 +130,26 @@ router.delete('/del/:id',(req,res,next) => {
 			})
 		}
 	})
+})
+
+//查询类型总数
+router.get('/total',(req,res,next) => {
+    const total = Product.find().count();
+    console.log('product total   ' + total)
+    if(total > 0){
+        res.json({
+            status: '1',
+            msg: '',
+            total: num
+        })
+    } else {
+        res.json({
+            status: '0',
+            msg: '没有产品',
+            total: 0
+        })
+    }
+
 })
 
 module.exports = router
