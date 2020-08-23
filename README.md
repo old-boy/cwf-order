@@ -15,11 +15,11 @@ npm run start
 # 相关图片
 
 ## 产品管理
-![image](https://github.com/old-boy/cwf-order/blob/master/images/%E4%BA%A7%E5%93%81%E7%AE%A1%E7%90%86.png)
+![image](https://github.com/old-boy/cwf-order/blob/master/images/product.png)
 ## 订单管理
-![image](https://github.com/old-boy/cwf-order/blob/master/images/%E8%AE%A2%E5%8D%95%E7%AE%A1%E7%90%86.png)
+![image](https://github.com/old-boy/cwf-order/blob/master/images/prder.png)
 ## 客户管理
-![image](https://github.com/old-boy/cwf-order/blob/master/images/%E5%AE%A2%E6%88%B7%E7%AE%A1%E7%90%86.png)
+![image](https://github.com/old-boy/cwf-order/blob/master/images/client.png)
 
 
 
