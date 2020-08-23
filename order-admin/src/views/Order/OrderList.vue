@@ -221,7 +221,7 @@
             <el-switch v-model="orderForm.delivery"></el-switch>
           </el-form-item>
           <el-form-item label="订购次数" prop="purchasing">
-               <el-input-number v-model="orderForm.receivables" :disabled="true" @change="handlePurchasingChange" :min="1" :max="2000" label="描述文字"></el-input-number>
+               <el-input-number v-model="orderForm.receivables" :disabled="true" @change="handlePurchasingChange"></el-input-number>
           </el-form-item>
           <el-form-item label="产品名称"  prop="producId">
               <el-select v-model="orderForm.producId" placeholder="请选择" @change="selectedProductKey($event)">
@@ -361,16 +361,16 @@ export default {
                 orderDate:'',
                 purchasing:'',
                 productId:'',//id,根据 id 查name / num / price
-                receivables:0,
+                receivables:0.00,
                 billingDate:'',
-                actuallyArrived:0,
+                actuallyArrived:0.00,
                 paymentDate:'',
                 production:'',
                 followUpTypeId:'',//id
                 shipDate:'',
                 arrivalDate:'',
                 waybillNumber:'',
-                shipping:0,
+                shipping:0.00,
                 courierCompany:''
             },
             salesId:'',
