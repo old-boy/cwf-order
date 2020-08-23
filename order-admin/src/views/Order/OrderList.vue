@@ -26,106 +26,132 @@
       <el-table-column
         prop="contractNo"
         label="合同号"
+        width="200"
       >
       </el-table-column>
       <el-table-column
         prop="sales"
         label="销售代表"
+        width="200"
       ></el-table-column>
       <el-table-column
         prop="clientName"
         label="客户名称"
+        width="200"
       >
       </el-table-column>
       <el-table-column
         prop="clientType"
         label="客户类型"
+        width="200"
       >
       </el-table-column>
       <el-table-column
         prop="orderDate"
         label="订购日期"
-      >
-      </el-table-column>
-      <el-table-column
-        prop="purchasing"
-        label="采购次数"
+        width="200"
       >
       </el-table-column>
       <el-table-column
         prop="productName"
         label="品名"
+        width="200"
       >
       </el-table-column>
       <el-table-column
         prop="productNum"
         label="数量"
+        width="200"
       >
       </el-table-column>
       <el-table-column
         prop="productPrice"
         label="单价"
+        width="200"
       >
       </el-table-column>
       <el-table-column
         prop="receivables"
         label="应收金额"
+        width="200"
       >
       </el-table-column>
       <el-table-column
         prop="billingDate"
         label="开票日期"
+        width="200"
       >
       </el-table-column>
       <el-table-column
         prop="actuallyArrived"
         label="实际到账"
+        width="200"
       >
       </el-table-column>
       <el-table-column
         prop="paymentDate"
         label="收款日期"
+        width="200"
       >
       </el-table-column>
       <el-table-column
         prop="production"
         label="生产下单"
+        width="200"
       >
       </el-table-column>
       <el-table-column
         prop="followUpType"
         label="跟单类型"
+        width="200"
       >
       </el-table-column>
       <el-table-column
         prop="shipDate"
         label="发货日期"
+        width="200"
       >
       </el-table-column>
       <el-table-column
         prop="arrivalDate"
         label="到货日期"
+        width="200"
       >
       </el-table-column>
       <el-table-column
         prop="waybillNumber"
         label="运单号"
+        width="200"
       >
       </el-table-column>
       <el-table-column
         prop="shipping"
         label="运费"
+        width="200"
       >
       </el-table-column>
       <el-table-column
         prop="courierCompany"
         label="快递公司"
+        width="200"
       >
       </el-table-column>
       <el-table-column
-        label="操作"
-        width="400"
+        prop="createdAt"
+        label="创建时间"
+        width="200"
       >
+      </el-table-column>
+      <el-table-column
+        prop="updatedAt"
+        label="更新时间"
+        width="200"
+      >
+      </el-table-column>
+      <el-table-column
+        fixed="right"
+        label="操作"
+        width="300">
         <template slot-scope="scope">
           <el-button type="warning" size="mini"  @click="showEditModal(scope.$index, scope.row)">编辑</el-button>
           <el-button type="danger" size="mini" @click="showRemoveModal(scope.$index, scope.row)">删除</el-button>
@@ -143,10 +169,10 @@
         <el-form ref="orderForm" :model="orderForm" :rules="rules" :label-width="formLabelWidth" slot="content">
             <el-form-item label="合同号"  prop="contractNo">
                 <el-input v-model="orderForm.contractNo">
-                   <template slot="prepend">TSB</template>
+                   
                 </el-input>
             </el-form-item>
-            <el-form-item label="销售代表"  prop="sales">
+            <el-form-item label="销售代表"  prop="salesId">
               <el-select v-model="orderForm.salesId" placeholder="请选择" @change="selectedSalesKey($event)">
                   <el-option
                   v-for="item in salesArr"
@@ -158,7 +184,7 @@
                   </el-option>
               </el-select>
           </el-form-item>
-          <el-form-item label="客户名称"  prop="clientName">
+          <el-form-item label="客户名称"  prop="clientNameId">
               <el-select v-model="orderForm.clientNameId" placeholder="请选择" @change="selectedClientNameKey($event)">
                   <el-option
                   v-for="item in clientNameArr"
@@ -170,7 +196,7 @@
                   </el-option>
               </el-select>
           </el-form-item>
-          <el-form-item label="客户类型"  prop="clientType">
+          <el-form-item label="客户类型"  prop="clientTypeId">
               <el-select v-model="orderForm.clientTypeId" placeholder="请选择" @change="selectedClientTypeKey($event)">
                   <el-option
                   v-for="item in clientTypeArr"
@@ -197,7 +223,7 @@
           <el-form-item label="订购次数" prop="purchasing">
                <el-input-number v-model="orderForm.receivables" :disabled="true" @change="handlePurchasingChange" :min="1" :max="2000" label="描述文字"></el-input-number>
           </el-form-item>
-          <el-form-item label="产品名称"  prop="product">
+          <el-form-item label="产品名称"  prop="producId">
               <el-select v-model="orderForm.producId" placeholder="请选择" @change="selectedProductKey($event)">
                   <el-option
                   v-for="item in productArr"
@@ -241,7 +267,7 @@
                 <el-input v-model="orderForm.production">
                 </el-input>
           </el-form-item>
-          <el-form-item label="跟单类型"  prop="followUpType">
+          <el-form-item label="跟单类型"  prop="followUpTypeId">
               <el-select v-model="orderForm.followUpTypeId" placeholder="请选择" @change="selectedFollowUpTypeKey($event)">
                   <el-option
                   v-for="item in followUpTypeArr"
@@ -288,6 +314,15 @@
         <div slot="footer" class="dialog-footer">
             <el-button type="danger" native-type="reset" @click="resetForm('orderForm')">重置</el-button>
             <el-button type="primary" @click="addOrder('orderForm')">保存</el-button>
+        </div>
+    </modal>
+    <modal :dialogFormVisible="removeModalFlag" @modalToggle="modalChange">
+        <p slot="content" style="text-align: center;font-size: 20px;">
+            是否删除订单？
+        </p>
+        <div slot="footer" class="dialog-footer">
+            <el-button @click="modalChange">取 消</el-button>
+            <el-button type="danger" @click="handleDelete">确 定</el-button>
         </div>
     </modal>
     </div>
@@ -338,6 +373,7 @@ export default {
                 shipping:0,
                 courierCompany:''
             },
+            salesId:'',
             formLabelWidth: '120px',
             modalWidth:'600px',
             rules:{
@@ -390,6 +426,7 @@ export default {
       clickpageNum(){
 
       },
+      
       modalChange(){
           this.addModalFlag = false;
           this.removeModalFlag = false;
@@ -411,10 +448,11 @@ export default {
 
       },
       selectedSalesKey($event){
-          this.orderForm.salesId = $event;
+          this.salesId = $event;
       },
       selectedClientNameKey($event){
           this.orderForm.clientNameId = $event;
+          console.log('clientNameId  ' + this.orderForm.clientNameId)
       },
       selectedClientTypeKey($event){
           this.orderForm.clientTypeId = $event;
@@ -422,12 +460,11 @@ export default {
       selectedFollowUpTypeKey($event){
           this.orderForm.followUpTypeId = $event;
       },
-      selectedProductKey(){
+      selectedProductKey($event){
           this.orderForm.productId = $event;
       },
       getOrderDade(val){
           this.orderForm.orderDate = val;
-          console.log('orderDate   ' + val)
       },
       getBillingDate(val){
           this.orderForm.billingDate = val;
@@ -475,26 +512,90 @@ export default {
 
       },
       loadingData(){
-        // this.loadingFlag = true;
+        this.loadingFlag = true;
+        this.$ajax.get('/order/').then(res => {
+            this.loadingFlag = false;
+            
+            let data = res.data.result;
+            console.log('data   ' + data)
+            let arr = [];
+            //根据 mongodb populate 查询不同表的数据
+            for(var i = 0; i < data.length; i++){
+                    let _id = data[i]._id;
+                    let contractNo= data[i].contractNo;
+                    let clientName = data[i].client.clientName;
+                    let clientType = data[i].clientType.clientType;
+                    let courierCompany = data[i].courierCompany;
+                    let followUpType = data[i].followUpType.orderType;
+                    let productName = data[i].product.productName;
+                    let productNum = data[i].product.productNum;
+                    let productPrice = data[i].product.productPrice + '元';
+                    let production = data[i].production;
+                    let purchasing = data[i].purchasing;
+                    let receivables = data[i].receivables;
+                    let actuallyArrived = data[i].actuallyArrived;
+                    let sales = data[i].sales.account;
+                    let shipping = data[i].shipping;
+                    let waybillNumber = data[i].waybillNumber;
+
+                    let arrivalDate = data[i].arrivalDate;
+                    let billingDate = data[i].billingDate;
+                    let orderDate = data[i].orderDate;
+                    let paymentDate = data[i].paymentDate;
+                    let shipDate = data[i].shipDate;
+                    let updatedAt = data[i].updatedAt;
+                    let createdAt = data[i].createdAt;
+
+                    let dataEntity = {
+                        _id,
+                        contractNo,
+                        clientName,
+                        clientType,
+                        courierCompany,
+                        followUpType,
+                        productName,
+                        productNum,
+                        productPrice,
+                        production,
+                        purchasing,
+                        receivables,
+                        actuallyArrived,
+                        sales,
+                        shipping,
+                        waybillNumber,
+                        arrivalDate,
+                        billingDate,
+                        orderDate,
+                        paymentDate,
+                        shipDate,
+                        updatedAt,
+                        createdAt
+                    }
+                    arr.push(dataEntity);
+                };
+                this.tableData = arr;
+                this.total = arr.length;
+        })
       },
       addOrder(formName){
+        console.log('addOrder')
         this.$refs[formName].validate((valid) => {
             if(valid){
               
                 this.$ajax.post('/order/add',{
                     contractNo: this.orderForm.contractNo,
-                    sales: this.orderForm.salesId,
-                    clientName: this.orderForm.clientNameId,
-                    clientType: this.orderForm.clientTypeId,
+                    salesId: this.orderForm.salesId,
+                    clientNameId: this.orderForm.clientNameId,
+                    clientTypeId: this.orderForm.clientTypeId,
                     orderDate: this.orderForm.orderDate,
                     purchasing: this.orderForm.purchasing,
-                    product: this.orderForm.productId,
+                    productId: this.orderForm.productId,
                     receivables: this.orderForm.receivables,
                     billingDate: this.orderForm.billingDate,
                     actuallyArrived: this.orderForm.actuallyArrived,
                     paymentDate: this.orderForm.paymentDate,
                     production: this.orderForm.production,
-                    followUpType: this.orderForm.followUpTypeId,
+                    followUpTypeId: this.orderForm.followUpTypeId,
                     shipDate: this.orderForm.shipDate,
                     arrivalDate: this.orderForm.arrivalDate,
                     waybillNumber: this.orderForm.waybillNumber,
@@ -519,11 +620,41 @@ export default {
             }
         })
       },
-      showRemoveModal(){
-
+      showRemoveModal(incex,row){
+          this.removeModalFlag = true;
+          this.orderId = row._id;
       },
-      resetForm(){
+      handleDelete(){
+          this.$ajax.delete(`/order/del/${this.orderId}`,{
+              params: {
+                  id: this.orderId
+              }
+          }).then(res => {
+              if (res.data.status === '1') {
+                  this.$message({
+                      message: res.data.msg,
+                      type: 'success'
+                  })
+                  // 重新获取新数据
+                  this.loadingData();
+                  this.removeModalFlag = false
+                  } else {
+                  this.removeModalFlag = false
+              }
+          })
+      },
+      formatDate(curdateZ){
+        var d = new Date(curdateZ);
+        var year = d.getFullYear();
+        var month = d.getMonth() < 10 ? '0' + d.getMonth() : d.getMonth();
+        var day = d.getDay() < 10 ? '0' + d.getDay() : d.getDay();
 
+      
+        return year + '-' + month + '-' + day;
+      },
+      
+      resetForm (formName) {
+          this.$refs[formName].resetFields()
       }
     }
 }

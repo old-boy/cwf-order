@@ -88,7 +88,7 @@ router.get('/total',(req,res,next) => {
 })
 //根据ID查询
 router.get('/:id',(req,res,next) => {
-	const _id = `${req.query.id}`;
+	const _id = `${req.params.id}`;
 	console.log('userId  ' + _id)
 	User.findById({_id})
 		.populate('info')

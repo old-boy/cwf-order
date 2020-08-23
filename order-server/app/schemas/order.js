@@ -13,7 +13,7 @@ const orderSchema = new Schema({
         type: ObjectId,
         ref: 'User'
     },
-    clientName:{
+    client:{
         type: ObjectId,
         ref: 'Client'
     },
@@ -40,7 +40,7 @@ const orderSchema = new Schema({
     production:String,//生产下单
     followUpType:{
         type: ObjectId,
-        ref: 'followUp' //跟单类型
+        ref: 'OrderType' //跟单类型
     },
     shipDate:{
         type: Date //发货日期

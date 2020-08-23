@@ -28,7 +28,12 @@ router.get('/type',(req,res,next) => {
 })
 
 router.get('/',(req,res,next) => {
-    Order.find({})
+	Order.find({})
+		.populate('sales', 'account')
+		.populate('client', 'clientName')
+		.populate('clientType', 'clientType')
+		.populate('product', 'productGroup productName productNum productPrice')
+		.populate('followUpType')
 		.sort({'_id':1})
 		.limit(10)
 		.exec()
@@ -153,7 +158,7 @@ router.post('/type/add',(req,res,next) => {
 router.post('/add',(req,res,next) => {
 	const contractNo = req.body.contractNo,
 		  sales = req.body.salesId,
-		  clientName = req.body.clientNameId,
+		  client = req.body.clientNameId,
 		  clientType = req.body.clientTypeId,
 		  orderDate = req.body.orderDate,
 		  purchasing = req.body.purchasing,
@@ -170,6 +175,7 @@ router.post('/add',(req,res,next) => {
 		  shipping = req.body.shipping,
 		  courierCompany = req.body.courierCompany;
 
+		  console.log('client  ' + client)
 	    Order.findOne({contractNo:req.body.contractNo}).then((order)　=> {
         if(order){
             return res.status(400).json(
@@ -183,7 +189,7 @@ router.post('/add',(req,res,next) => {
             let newOrder = {
 				contractNo,
 				sales,
-				clientName,
+				client,
 				clientType,
 				orderDate,
 				purchasing,
@@ -201,7 +207,9 @@ router.post('/add',(req,res,next) => {
 				courierCompany
             };
 
-            let orderEntity = new Order(newOrder)
+			console.log('newOrder   ' + JSON.stringify(newOrder))
+			let orderEntity = new Order(newOrder)
+			
             orderEntity.save(err => {
                 if (err) {
                     res.json({
@@ -223,11 +231,11 @@ router.post('/add',(req,res,next) => {
 
 
 
-//删除客户类型
+//删除
 router.delete('/type/del/:id',(req,res,next) => {
 	const id = `${req.params.id}`;
-	Order.deleteOne({ _id: id }).then((order) => {
-		console.log(order)
+	OrderType.deleteOne({ _id: id }).then((type) => {
+		console.log(type)
 		if(order){
 			res.status(200).json({
 				status: '1',
@@ -246,9 +254,9 @@ router.delete('/type/del/:id',(req,res,next) => {
 
 router.delete('/del/:id',(req,res,next) => {
 	const id = `${req.params.id}`;
-	OrderType.deleteOne({ _id: id }).then((type) => {
-		console.log(type)
-		if(type){
+	Order.deleteOne({ _id: id }).then((order) => {
+		console.log(order)
+		if(order){
 			res.status(200).json({
 				status: '1',
 				msg: '删除成功',
