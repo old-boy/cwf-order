@@ -8,7 +8,7 @@
           </el-breadcrumb>
       </el-col>
       <el-col :span="1" :offset="10">
-          <el-button type="success" size="mini"  @click="addModalFlag = true">添加</el-button>
+          <el-button type="success" size="mini"  @click="addModal">添加</el-button>
       </el-col>
     </el-row>
     <el-table
@@ -139,7 +139,7 @@
         :pageSize="pageSize"
         @clickpageNum="clickpageNum">
         </pagination>
-    <modal :dialogFormVisible="addModalFlag" @modalToggle="modalChange" :title="'新增'" :width="modalWidth" class="modal">
+       <modal :dialogFormVisible="addModalFlag" @modalToggle="modalChange" :title="'新增'" :width="modalWidth" class="modal">
         <el-form ref="orderForm" :model="orderForm" :rules="rules" :label-width="formLabelWidth" slot="content">
             <el-form-item label="合同号"  prop="contractNo">
                 <el-input v-model="orderForm.contractNo">
@@ -186,7 +186,9 @@
                <el-date-picker
                 v-model="orderForm.orderDate"
                 type="date"
-                placeholder="选择日期">
+                placeholder="选择日期"
+                @change="getOrderDade" 
+                value-format="yyyy-MM-dd">
               </el-date-picker>
           </el-form-item>
           <el-form-item label="当日配送">
@@ -221,14 +223,18 @@
                <el-date-picker
                 v-model="orderForm.billingDate"
                 type="date"
-                placeholder="选择日期">
+                placeholder="选择日期"
+                @change="getBillingDate" 
+                value-format="yyyy-MM-dd">
               </el-date-picker>
-          </el-form-item>
+          </el-form-item> 
            <el-form-item label="到账日期" prop="paymentDate">
                <el-date-picker
                 v-model="orderForm.paymentDate"
                 type="date"
-                placeholder="选择日期">
+                placeholder="选择日期"
+                @change="getPaymentDate" 
+                value-format="yyyy-MM-dd">
               </el-date-picker>
           </el-form-item>
           <el-form-item label="生产下单" prop="production">
@@ -238,7 +244,7 @@
           <el-form-item label="跟单类型"  prop="followUpType">
               <el-select v-model="orderForm.followUpTypeId" placeholder="请选择" @change="selectedFollowUpTypeKey($event)">
                   <el-option
-                  v-for="item in orderTypeArr"
+                  v-for="item in followUpTypeArr"
                   :key="item._id"
                   :label="item.orderType"
                   :value="item._id"
@@ -251,14 +257,18 @@
                <el-date-picker
                 v-model="orderForm.shipDate"
                 type="date"
-                placeholder="选择日期">
+                placeholder="选择日期"
+                @change="getShipDate" 
+                value-format="yyyy-MM-dd">
               </el-date-picker>
           </el-form-item>
           <el-form-item label="到货日期" prop="arrivalDate">
                <el-date-picker
                 v-model="orderForm.arrivalDate"
                 type="date"
-                placeholder="选择日期">
+                placeholder="选择日期"
+                @change="getArrivalDate" 
+                value-format="yyyy-MM-dd">
               </el-date-picker>
           </el-form-item>
           <el-form-item label="运单号" prop="waybillNumber">
@@ -306,7 +316,7 @@ export default {
             clientNameArr:[],
             clientTypeArr:[],
             productArr:[],
-            orderTypeArr:[],
+            followUpTypeArr:[],
             orderId:'',
             orderForm:{
                 contractNo:'',
@@ -343,20 +353,8 @@ export default {
                 clientType:[
                     { required: true, message: '请选择客户类型', trigger: 'blur' }
                 ],
-                orderDate:[
-                    { required: true, message: '请选择订单日期', trigger: 'blur' }
-                ],
                 product:[
                     { required: true, message: '请选择产品名称', trigger: 'blur' }
-                ],
-                receivables:[
-                    { required: true, message: '请选择应收金额', trigger: 'blur' }
-                ],
-                actuallyArrived:[
-                    { required: true, message: '请输入实际到帐金额', trigger: 'blur' }
-                ],
-                paymentDate:[
-                    { required: true, message: '请选择到账日期', trigger: 'blur' }
                 ],
                 production:[
                     { required: true, message: '请填入生产下单', trigger: 'blur' }
@@ -364,23 +362,17 @@ export default {
                 followUpType:[
                     { required: true, message: '请选择跟单类型', trigger: 'blur' }
                 ],
-                shipDate:[
-                    { required: true, message: '请选择发货日期', trigger: 'blur' }
-                ],
-                arrivalDate:[
-                    { required: true, message: '请选择到货日期', trigger: 'blur' }
-                ],
                 waybillNumber:[
                     { required: true, message: '请录入运单号', trigger: 'blur' }
-                ],
-                shipping:[
-                    { required: true, message: '请录入运费', trigger: 'blur' }
                 ],
                 courierCompany:[
                     { required: true, message: '请输入快递公司', trigger: 'blur' }
                 ]
             }
         }
+    },
+    created() {
+      this.loadingData();
     },
     computed: {
       
@@ -403,29 +395,125 @@ export default {
           this.removeModalFlag = false;
           this.editModalFlag = false;
       },
-     
+      addModal(){
+          this.addModalFlag = true;
+          this.getClientType();
+          this.getClientName();
+          this.getSaler();
+          this.getProductName();
+          this.getFollowUpType();
+          this.getOrderDade();
+          this.getBillingDate();
+          this.getPaymentDate();
+          this.getArrivalDate();
+      },
       showEditModal(){
 
       },
-      selectedSalesKey(){
-
+      selectedSalesKey($event){
+          this.orderForm.salesId = $event;
       },
-      selectedClientNameKey(){
-
+      selectedClientNameKey($event){
+          this.orderForm.clientNameId = $event;
       },
-      selectedClientTypeKey(){
-
+      selectedClientTypeKey($event){
+          this.orderForm.clientTypeId = $event;
       },
-      selectedFollowUpTypeKey(){
-
+      selectedFollowUpTypeKey($event){
+          this.orderForm.followUpTypeId = $event;
+      },
+      selectedProductKey(){
+          this.orderForm.productId = $event;
+      },
+      getOrderDade(val){
+          this.orderForm.orderDate = val;
+          console.log('orderDate   ' + val)
+      },
+      getBillingDate(val){
+          this.orderForm.billingDate = val;
+      },
+      getPaymentDate(val){
+        this.orderForm.paymentDate = val;
+      },
+      getShipDate(val){
+        this.orderForm.shipDate = val;
+      },
+      getArrivalDate(val){
+        this.orderForm.arrivalDate = val;
+      },
+      getSaler(){
+          this.$ajax.get('/users/').then(response => {
+              let res = response.data.result;
+              this.salesArr = res;
+          })
+      },
+      getClientType(){
+          this.$ajax.get('/clients/type').then(response => {
+              let res = response.data.result;
+              this.clientTypeArr = res;
+          })
+      },
+      getClientName(){
+          this.$ajax.get('/clients/').then(response => {
+             let res = response.data.result;
+             this.clientNameArr = res;
+          })
+      },
+      getProductName(){
+          this.$ajax.get('/product/').then(response => {
+             let res = response.data.result;
+             this.productArr = res;
+          })
+      },
+      getFollowUpType(){
+          this.$ajax.get('/order/type').then(response => {
+              let res = response.data.result;
+              this.followUpTypeArr = res;
+          })
       },
       handlePurchasingChange(){
 
       },
+      loadingData(){
+        // this.loadingFlag = true;
+      },
       addOrder(formName){
         this.$refs[formName].validate((valid) => {
             if(valid){
-
+              
+                this.$ajax.post('/order/add',{
+                    contractNo: this.orderForm.contractNo,
+                    sales: this.orderForm.salesId,
+                    clientName: this.orderForm.clientNameId,
+                    clientType: this.orderForm.clientTypeId,
+                    orderDate: this.orderForm.orderDate,
+                    purchasing: this.orderForm.purchasing,
+                    product: this.orderForm.productId,
+                    receivables: this.orderForm.receivables,
+                    billingDate: this.orderForm.billingDate,
+                    actuallyArrived: this.orderForm.actuallyArrived,
+                    paymentDate: this.orderForm.paymentDate,
+                    production: this.orderForm.production,
+                    followUpType: this.orderForm.followUpTypeId,
+                    shipDate: this.orderForm.shipDate,
+                    arrivalDate: this.orderForm.arrivalDate,
+                    waybillNumber: this.orderForm.waybillNumber,
+                    shipping: this.orderForm.shipping,
+                    courierCompany: this.orderForm.courierCompany
+                }).then(res => {
+                  console.log('order    ' + res)
+                    if (res.data.status === '1') {
+                    this.$message({
+                        message: res.data.msg,
+                        type: 'success'
+                    })
+                    this.loadingData()
+                    this.addModalFlag = false
+                    this.resetForm('orderForm')
+                    } else {
+                    this.$message.error(res.data.msg)
+                    }
+                })
             }else{
               return false;
             }
