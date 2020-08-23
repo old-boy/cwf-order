@@ -45,12 +45,6 @@
                     >产品列表</el-menu-item
                   >
                 </el-menu-item-group>
-                <el-menu-item-group>
-                  <template slot="title">合同</template>
-                  <el-menu-item index="2-3" route="/sales/list"
-                    >合同列表</el-menu-item
-                  >
-                </el-menu-item-group>
               </el-submenu>
               <el-submenu index="3">
                 <template slot="title">

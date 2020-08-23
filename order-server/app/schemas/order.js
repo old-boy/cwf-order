@@ -17,24 +17,25 @@ const orderSchema = new Schema({
         type: ObjectId,
         ref: 'Client'
     },
-    orderDate:{
-        type: Date,
-        defalut: Date.now()
+    clientType:{
+        type: ObjectId,
+        ref: 'ClientType'
     },
-    purchasing:Number,
+    orderDate:{
+        type: Date
+    },
+    purchasing:Number, //购买次数
     product:{
         type: ObjectId,
         ref: 'Product'
     },
-    receivables:Number,//应收款
+    receivables:Number, //应收款
     billingDate:{
-        type: Date,
-        defalut: Date.now()//开票日期
+        type: Date //开票日期
     },
     actuallyArrived:Number,//实际到账
     paymentDate:{
-        type: Date,
-        defalut: Date.now() //收款日期
+        type: Date//收款日期
     },
     production:String,//生产下单
     followUpType:{
@@ -42,12 +43,10 @@ const orderSchema = new Schema({
         ref: 'followUp' //跟单类型
     },
     shipDate:{
-        type: Date,
-        defalut: Date.now() //发货日期
+        type: Date //发货日期
     },
     arrivalDate:{
-        type: Date,
-        defalut: Date.now() //到货日期
+        type: Date //到货日期
     },
     waybillNumber:String,//运单号
     shipping:Number,//运费

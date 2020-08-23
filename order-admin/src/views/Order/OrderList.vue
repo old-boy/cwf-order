@@ -8,7 +8,7 @@
           </el-breadcrumb>
       </el-col>
       <el-col :span="1" :offset="10">
-          <el-button type="success" size="mini">添加</el-button>
+          <el-button type="success" size="mini"  @click="addModalFlag = true">添加</el-button>
       </el-col>
     </el-row>
     <el-table
@@ -24,12 +24,12 @@
       width="55">
     </el-table-column>
       <el-table-column
-        prop="contractNum"
+        prop="contractNo"
         label="合同号"
       >
       </el-table-column>
       <el-table-column
-        prop="seller"
+        prop="sales"
         label="销售代表"
       ></el-table-column>
       <el-table-column
@@ -48,7 +48,7 @@
       >
       </el-table-column>
       <el-table-column
-        prop="purchaseNum"
+        prop="purchasing"
         label="采购次数"
       >
       </el-table-column>
@@ -63,84 +63,323 @@
       >
       </el-table-column>
       <el-table-column
-        prop="unitPrice"
+        prop="productPrice"
         label="单价"
       >
       </el-table-column>
       <el-table-column
-        prop="accountsReceivable"
+        prop="receivables"
         label="应收金额"
       >
       </el-table-column>
       <el-table-column
-        prop="invoicingDate"
+        prop="billingDate"
         label="开票日期"
       >
       </el-table-column>
       <el-table-column
-        prop="accountsActual"
+        prop="actuallyArrived"
         label="实际到账"
       >
       </el-table-column>
-      
+      <el-table-column
+        prop="paymentDate"
+        label="收款日期"
+      >
+      </el-table-column>
+      <el-table-column
+        prop="production"
+        label="生产下单"
+      >
+      </el-table-column>
+      <el-table-column
+        prop="followUpType"
+        label="跟单类型"
+      >
+      </el-table-column>
+      <el-table-column
+        prop="shipDate"
+        label="发货日期"
+      >
+      </el-table-column>
+      <el-table-column
+        prop="arrivalDate"
+        label="到货日期"
+      >
+      </el-table-column>
+      <el-table-column
+        prop="waybillNumber"
+        label="运单号"
+      >
+      </el-table-column>
+      <el-table-column
+        prop="shipping"
+        label="运费"
+      >
+      </el-table-column>
+      <el-table-column
+        prop="courierCompany"
+        label="快递公司"
+      >
+      </el-table-column>
       <el-table-column
         label="操作"
         width="400"
       >
         <template slot-scope="scope">
-          <el-button type="primary" size="mini"  @click="showInfoModal(scope.$index, scope.row)">员工资料</el-button>
-          <el-button type="info" size="mini"  @click="showPwdModal(scope.$index, scope.row)">重设密码</el-button>
-          <el-button type="warning" size="mini"  @click="showRoleModal(scope.$index, scope.row)">权限设置</el-button>
+          <el-button type="warning" size="mini"  @click="showEditModal(scope.$index, scope.row)">编辑</el-button>
           <el-button type="danger" size="mini" @click="showRemoveModal(scope.$index, scope.row)">删除</el-button>
         </template>
       </el-table-column>
     </el-table>
+    <pagination 
+        :total="total"
+        :pageCount="pageCount"
+        :currentPage="currentPage"
+        :pageSize="pageSize"
+        @clickpageNum="clickpageNum">
+        </pagination>
+    <modal :dialogFormVisible="addModalFlag" @modalToggle="modalChange" :title="'新增'" :width="modalWidth" class="modal">
+        <el-form ref="orderForm" :model="orderForm" :rules="rules" :label-width="formLabelWidth" slot="content">
+            <el-form-item label="合同号"  prop="contractNo">
+                <el-input v-model="orderForm.contractNo">
+                   <template slot="prepend">TSB</template>
+                </el-input>
+            </el-form-item>
+            <el-form-item label="销售代表"  prop="sales">
+              <el-select v-model="orderForm.salesId" placeholder="请选择" @change="selectedSalesKey($event)">
+                  <el-option
+                  v-for="item in salesArr"
+                  :key="item._id"
+                  :label="item.account"
+                  :value="item._id"
+                  >
+                  <span style="float: left">{{ item.account }}</span>
+                  </el-option>
+              </el-select>
+          </el-form-item>
+          <el-form-item label="客户名称"  prop="clientName">
+              <el-select v-model="orderForm.clientNameId" placeholder="请选择" @change="selectedClientNameKey($event)">
+                  <el-option
+                  v-for="item in clientNameArr"
+                  :key="item._id"
+                  :label="item.clientName"
+                  :value="item._id"
+                  >
+                  <span style="float: left">{{ item.clientName }}</span>
+                  </el-option>
+              </el-select>
+          </el-form-item>
+          <el-form-item label="客户类型"  prop="clientType">
+              <el-select v-model="orderForm.clientTypeId" placeholder="请选择" @change="selectedClientTypeKey($event)">
+                  <el-option
+                  v-for="item in clientTypeArr"
+                  :key="item._id"
+                  :label="item.clientType"
+                  :value="item._id"
+                  >
+                  <span style="float: left">{{ item.clientType }}</span>
+                  </el-option>
+              </el-select>
+          </el-form-item>
+          <el-form-item label="订购日期" prop="orderDate">
+               <el-date-picker
+                v-model="orderForm.orderDate"
+                type="date"
+                placeholder="选择日期">
+              </el-date-picker>
+          </el-form-item>
+          <el-form-item label="当日配送">
+            <el-switch v-model="orderForm.delivery"></el-switch>
+          </el-form-item>
+          <el-form-item label="订购次数" prop="purchasing">
+               <el-input-number v-model="orderForm.receivables" :disabled="true" @change="handlePurchasingChange" :min="1" :max="2000" label="描述文字"></el-input-number>
+          </el-form-item>
+          <el-form-item label="产品名称"  prop="product">
+              <el-select v-model="orderForm.producId" placeholder="请选择" @change="selectedProductKey($event)">
+                  <el-option
+                  v-for="item in productArr"
+                  :key="item._id"
+                  :label="item.productName"
+                  :value="item._id"
+                  >
+                  <span style="float: left">{{ item.productName }}</span>
+                  </el-option>
+              </el-select>
+          </el-form-item>
+          <el-form-item label="应收金额" prop="receivables">
+                <el-input v-model="orderForm.receivables">
+                   <template slot="append">元</template>
+                </el-input>
+          </el-form-item>
+          <el-form-item label="实际到帐" prop="actuallyArrived">
+                <el-input v-model="orderForm.actuallyArrived">
+                   <template slot="append">元</template>
+                </el-input>
+          </el-form-item>
+          <el-form-item label="开票日期" prop="billingDate">
+               <el-date-picker
+                v-model="orderForm.billingDate"
+                type="date"
+                placeholder="选择日期">
+              </el-date-picker>
+          </el-form-item>
+           <el-form-item label="到账日期" prop="paymentDate">
+               <el-date-picker
+                v-model="orderForm.paymentDate"
+                type="date"
+                placeholder="选择日期">
+              </el-date-picker>
+          </el-form-item>
+          <el-form-item label="生产下单" prop="production">
+                <el-input v-model="orderForm.production">
+                </el-input>
+          </el-form-item>
+          <el-form-item label="跟单类型"  prop="followUpType">
+              <el-select v-model="orderForm.followUpTypeId" placeholder="请选择" @change="selectedFollowUpTypeKey($event)">
+                  <el-option
+                  v-for="item in orderTypeArr"
+                  :key="item._id"
+                  :label="item.orderType"
+                  :value="item._id"
+                  >
+                  <span style="float: left">{{ item.orderType }}</span>
+                  </el-option>
+              </el-select>
+          </el-form-item>
+          <el-form-item label="发货日期" prop="shipDate">
+               <el-date-picker
+                v-model="orderForm.shipDate"
+                type="date"
+                placeholder="选择日期">
+              </el-date-picker>
+          </el-form-item>
+          <el-form-item label="到货日期" prop="arrivalDate">
+               <el-date-picker
+                v-model="orderForm.arrivalDate"
+                type="date"
+                placeholder="选择日期">
+              </el-date-picker>
+          </el-form-item>
+          <el-form-item label="运单号" prop="waybillNumber">
+               <el-input v-model="orderForm.waybillNumber">
+                </el-input>
+          </el-form-item>
+          <el-form-item label="运费" prop="shipping">
+                <el-input v-model="orderForm.shipping">
+                   <template slot="append">元</template>
+                </el-input>
+          </el-form-item>
+          <el-form-item label="快递公司" prop="courierCompany">
+                <el-input v-model="orderForm.courierCompany">
+                </el-input>
+          </el-form-item>
+        </el-form>
+        <div slot="footer" class="dialog-footer">
+            <el-button type="danger" native-type="reset" @click="resetForm('orderForm')">重置</el-button>
+            <el-button type="primary" @click="addOrder('orderForm')">保存</el-button>
+        </div>
+    </modal>
     </div>
 </template>
 <script>
-
+import modal from '@/components/Modal'
+import pagination from '@/components/Pagination'
 
 export default {
+    components: {
+        modal,
+        pagination
+    },
     data(){
         return {
+            total:0,
+            pageCount:1,
+            currentPage:1,
+            pageSize: 10,
             loadingFlag:false,
+            addModalFlag: false,
+            editModalFlag: false,
+            removeModalFlag:false,
             tableData:[],
-            orderFormData:[
-              {
-                contractId:TSB20020020,
-                contractNum:'TSB20020020',
-                seller:'LYNN',
-                clientName:'定州东方铸造有限公司',
-                clientType:'A',
-                orderDate:'2020/2/25',
-                purchaseNum:"20",
-                productName:"Dry Dragon-1000",
-                productNum:700,
-                unitPrice:'￥35.8',
-                accountsReceivable:"￥21480.00",
-                accountsActual:"￥21480.00",
-                invoicingDate:"2020/05/26",
-                createAt:"2020/2/25",
-                updateAt:""
-              },
-              {
-                contractId:TSB20020019,
-                contractNum:'TSB20020021',
-                seller:'LYNN',
-                clientName:'百瑞美特殊材料（苏州）有限公司',
-                clientType:'B',
-                orderDate:'2020/2/25',
-                purchaseNum:"2",
-                productName:"Dry Fashion-50",
-                productNum:250,
-                unitPrice:'￥2.5',
-                accountsReceivable:"￥625.00",
-                accountsActual:"￥625.00",
-                invoicingDate:"2020/05/26",
-                createAt:"2020/2/25",
-                updateAt:"2020/05/26"
-              }
-            ]
+            salesArr:[],
+            clientNameArr:[],
+            clientTypeArr:[],
+            productArr:[],
+            orderTypeArr:[],
+            orderId:'',
+            orderForm:{
+                contractNo:'',
+                salesId:'',
+                clientNameId:'',//id
+                clientTypeId:'',//id
+                orderDate:'',
+                purchasing:'',
+                productId:'',//id,根据 id 查name / num / price
+                receivables:0,
+                billingDate:'',
+                actuallyArrived:0,
+                paymentDate:'',
+                production:'',
+                followUpTypeId:'',//id
+                shipDate:'',
+                arrivalDate:'',
+                waybillNumber:'',
+                shipping:0,
+                courierCompany:''
+            },
+            formLabelWidth: '120px',
+            modalWidth:'600px',
+            rules:{
+                contractNo:[
+                    { required: true, message: '请输入合同编号', trigger: 'blur' }
+                ],
+                sales:[
+                    { required: true, message: '请选择销售代表', trigger: 'blur' }
+                ],
+                clientName:[
+                    { required: true, message: '请选择客户名称', trigger: 'blur' }
+                ],
+                clientType:[
+                    { required: true, message: '请选择客户类型', trigger: 'blur' }
+                ],
+                orderDate:[
+                    { required: true, message: '请选择订单日期', trigger: 'blur' }
+                ],
+                product:[
+                    { required: true, message: '请选择产品名称', trigger: 'blur' }
+                ],
+                receivables:[
+                    { required: true, message: '请选择应收金额', trigger: 'blur' }
+                ],
+                actuallyArrived:[
+                    { required: true, message: '请输入实际到帐金额', trigger: 'blur' }
+                ],
+                paymentDate:[
+                    { required: true, message: '请选择到账日期', trigger: 'blur' }
+                ],
+                production:[
+                    { required: true, message: '请填入生产下单', trigger: 'blur' }
+                ],
+                followUpType:[
+                    { required: true, message: '请选择跟单类型', trigger: 'blur' }
+                ],
+                shipDate:[
+                    { required: true, message: '请选择发货日期', trigger: 'blur' }
+                ],
+                arrivalDate:[
+                    { required: true, message: '请选择到货日期', trigger: 'blur' }
+                ],
+                waybillNumber:[
+                    { required: true, message: '请录入运单号', trigger: 'blur' }
+                ],
+                shipping:[
+                    { required: true, message: '请录入运费', trigger: 'blur' }
+                ],
+                courierCompany:[
+                    { required: true, message: '请输入快递公司', trigger: 'blur' }
+                ]
+            }
         }
     },
     computed: {
@@ -156,17 +395,51 @@ export default {
       handleSelectionChange(){
 
       },
-      showInfoModal(){
+      clickpageNum(){
 
       },
-      showPwdModal(){
+      modalChange(){
+          this.addModalFlag = false;
+          this.removeModalFlag = false;
+          this.editModalFlag = false;
+      },
+     
+      showEditModal(){
 
+      },
+      selectedSalesKey(){
+
+      },
+      selectedClientNameKey(){
+
+      },
+      selectedClientTypeKey(){
+
+      },
+      selectedFollowUpTypeKey(){
+
+      },
+      handlePurchasingChange(){
+
+      },
+      addOrder(formName){
+        this.$refs[formName].validate((valid) => {
+            if(valid){
+
+            }else{
+              return false;
+            }
+        })
       },
       showRemoveModal(){
 
-      }
-    },
+      },
+      resetForm(){
 
-    
+      }
+    }
 }
 </script>
+<style lang="stylus" scoped>
+
+</style>
